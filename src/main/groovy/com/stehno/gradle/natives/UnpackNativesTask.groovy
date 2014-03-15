@@ -31,10 +31,15 @@ class UnpackNativesTask extends DefaultTask {
         project.files( project.configurations.compile ).findAll { jf-> jf.name in nativeJars }.each { njf->
             logger.info 'Unpacking {}...', njf
 
+            inputs.file( njf )
+
             JarFile jarFile = new JarFile(njf)
             jarFile.entries().findAll { JarEntry je-> je.name.endsWith(natives.libraryExtension) }.each { JarEntry jef->
                 logger.info 'Unpacking: {}', jef.name
-                project.file("build/natives/${natives.targetPlatform}/${jef.name}").bytes = jarFile.getInputStream(jef).bytes
+
+                String builtPath = "build/natives/${natives.targetPlatform}/${jef.name}"
+                outputs.file(builtPath)
+                project.file(builtPath).bytes = jarFile.getInputStream(jef).bytes
             }
         }
     }
