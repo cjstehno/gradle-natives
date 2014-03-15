@@ -18,7 +18,6 @@ class UnpackNativesTask extends DefaultTask {
         dependsOn 'build'
     }
 
-    // FIXME: depends on build
     @TaskAction void unpackNatives(){
         NativesPluginExtension natives = project.natives
 
@@ -27,10 +26,7 @@ class UnpackNativesTask extends DefaultTask {
         project.mkdir platformDir
         logger.info 'Unpacking ({}) native libraries into {}...', natives.targetPlatform, platformDir
 
-        // annoying side-effect of GStrings
-        def nativeJars = natives.jars.collect { j->
-            (j.endsWith('.jar') ? j : "${j}.jar") as String
-        }
+        def nativeJars = gatherJars( natives )
 
         project.files( project.configurations.compile ).findAll { jf-> jf.name in nativeJars }.each { njf->
             logger.info 'Unpacking {}...', njf
@@ -41,5 +37,13 @@ class UnpackNativesTask extends DefaultTask {
                 project.file("build/natives/${natives.targetPlatform}/${jef.name}").bytes = jarFile.getInputStream(jef).bytes
             }
         }
+    }
+
+    private Collection<String> gatherJars( final NativesPluginExtension natives ){
+        natives.jars instanceof Collection ? natives.jars.collect(normalizeName) : [normalizeName(natives.jars as String)]
+    }
+
+    private normalizeName = { j->
+        (j.endsWith('.jar') ? j : "${j}.jar") as String
     }
 }

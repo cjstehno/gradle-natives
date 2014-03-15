@@ -6,9 +6,10 @@ package com.stehno.gradle.natives
 class NativesPluginExtension {
 
     /**
-     * Defines the collection of jar names (on the classpath) to be searched for native libraries.
+     * Defines the collection of jar name(s) (on the classpath) to be searched for native libraries.
+     * Jar extension (.jar) will be added if omitted.
      */
-    Collection<String> jars
+    def jars
 
     /**
      * The file extension of the native libraries for the platform.
@@ -23,4 +24,3 @@ class NativesPluginExtension {
 
 // FIXME: need to determine runtime platform type as default (os.name) = "Windows 7"
 // FIXME: also lib ext
-// FIXME: allow jars to be a string or collection
