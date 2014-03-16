@@ -21,34 +21,35 @@ class UnpackNativesTask extends DefaultTask {
     @TaskAction void unpackNatives(){
         NativesPluginExtension natives = project.natives
 
-        File platformDir = project.file("build/natives/${natives.targetPlatform}")
+        def nativeJars = natives.configuredJars()
+        if( nativeJars ){
+            natives.configuredPlatforms().each { platform->
+                unpack( nativeJars, platform )
+            }
+        }
+    }
+
+    // TODO: figure out why this does not work unless method is public
+    void unpack( final Collection<String> jars, final Platform platform ){
+        File platformDir = project.file("build/natives/${platform.os}")
 
         project.mkdir platformDir
-        logger.info 'Unpacking ({}) native libraries into {}...', natives.targetPlatform, platformDir
+        logger.info 'Unpacking ({}) native libraries into {}...', platform, platformDir
 
-        def nativeJars = gatherJars( natives )
-
-        project.files( project.configurations.compile ).findAll { jf-> jf.name in nativeJars }.each { njf->
+        project.files( project.configurations.compile ).findAll { jf-> jf.name in jars }.each { njf->
             logger.info 'Unpacking {}...', njf
 
             inputs.file( njf )
 
             JarFile jarFile = new JarFile(njf)
-            jarFile.entries().findAll { JarEntry je-> je.name.endsWith(natives.libraryExtension) }.each { JarEntry jef->
+            jarFile.entries().findAll { JarEntry je-> platform.acceptsExtension( je.name ) }.each { JarEntry jef->
                 logger.info 'Unpacking: {}', jef.name
 
-                String builtPath = "build/natives/${natives.targetPlatform}/${jef.name}"
+                String builtPath = "build/natives/${platform.os}/${jef.name}"
+
                 outputs.file(builtPath)
                 project.file(builtPath).bytes = jarFile.getInputStream(jef).bytes
             }
         }
-    }
-
-    private Collection<String> gatherJars( final NativesPluginExtension natives ){
-        natives.jars instanceof Collection ? natives.jars.collect(normalizeName) : [normalizeName(natives.jars as String)]
-    }
-
-    private normalizeName = { j->
-        (j.endsWith('.jar') ? j : "${j}.jar") as String
     }
 }
