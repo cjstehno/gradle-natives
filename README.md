@@ -11,26 +11,29 @@ A Gradle plugin to aid in working with Java-based project that provide supportin
 
 ## Installation
 
-TBD
+Currently there is no public repository for this plugin so it must be built and installed on a known repo. To build and install it in your local repo:
 
-## Usage
+`gradle clean build install`
 
-To use the native plugin you first need to add it to your build:
+And then you can add the following to your project build file to load the plugin:
 
 ```groovy
 buildscript {
     repositories {
+		mavenLocal()
     }
 
     dependencies {
-        // TBD
+        classpath 'gradle-natives:gradle-natives:0.1'
     }
 }
 
 apply plugin:'natives'
 ```
 
-Then, to do anything useful with it, you need to configure it using the `natives` extension configuration, for example:
+## Usage
+
+To do anything useful with it, you need to configure it using the `natives` extension configuration, for example:
 
 ```groovy
 natives {
