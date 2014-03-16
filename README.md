@@ -2,9 +2,6 @@
 
 A Gradle plugin to aid in working with Java-based project that provide supporting native libraries.
 
-> WARNING: not ready for general use yet.
-
-
 ## Build
 
 `gradle clean build`
@@ -58,3 +55,8 @@ gradle unpackNatives
 
 Which will add the native libraries to the build under the directory `build/natives/PLATFORM` (where PLATFORM is the name
 of the configured platform).
+
+## References
+
+* https://github.com/cjstehno/coffeaelectronica/wiki/Going-Native-with-Gradle
+
