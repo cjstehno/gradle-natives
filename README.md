@@ -60,3 +60,5 @@ of the configured platform).
 
 * https://github.com/cjstehno/coffeaelectronica/wiki/Going-Native-with-Gradle
 
+
+[![Build Status](https://drone.io/github.com/cjstehno/gradle-natives/status.png)](https://drone.io/github.com/cjstehno/gradle-natives/latest)
