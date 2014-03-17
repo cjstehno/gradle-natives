@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
+buildscript {
+    repositories {
+        maven { url 'http://jcenter.bintray.com' }
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+    }
+}
+
 apply plugin:'groovy'
 apply plugin:'maven'
+apply plugin:'maven-publish'
+apply plugin:'bintray'
 
 repositories {
 	jcenter()
@@ -28,6 +39,30 @@ dependencies {
     testCompile 'junit:junit:4.11'
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication){
+            artifact jar
+        }
+    }
+}
+
 task wrapper( type:Wrapper) {
     gradleVersion = '1.10'
+}
+
+// NOTE: when running this you still need to go to web and publish updates
+bintray {
+    user = property('bintray-user')
+    key = property('bintray-key')
+
+    publications = ['mavenJava']
+
+    pkg {
+        repo = 'public'
+        name = 'gradle-natives'
+        desc = 'Gradle plugin for managing native libraries associated with Java projects.'
+        licenses = ['Apache-2.0']
+        labels = ['gradle', 'groovy', 'native']
+    }
 }
