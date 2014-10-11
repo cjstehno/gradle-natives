@@ -23,7 +23,7 @@ buildscript {
     }
 }
 
-apply plugin:'natives'
+apply plugin:'com.stehno.natives'
 ```
 
 ## Usage
