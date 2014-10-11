@@ -10,6 +10,8 @@ A Gradle plugin to aid in working with Java-based project that provide supportin
 
 To add the plugin to your project, add the following to your `build.gradle` file (or update the `buildscript` block if it already exists):
 
+need to update for the new pluin repo... and keep this version too
+
 ```groovy
 buildscript {
     repositories {
@@ -19,7 +21,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'gradle-natives:gradle-natives:0.1'
+        classpath 'com.stehno:gradle-natives:0.2'
     }
 }
 

@@ -34,7 +34,7 @@ class UnpackNativesTaskTest {
         project = ProjectBuilder.builder().withProjectDir( projectRoot ).build()
 
         project.apply plugin:'java'
-        project.apply plugin:'natives'
+        project.apply plugin:NativesPlugin
 
         project.repositories {
             jcenter()
@@ -46,8 +46,6 @@ class UnpackNativesTaskTest {
     }
 
     @Test void 'identity'(){
-        project.apply plugin:'natives'
-
         def task = project.tasks.unpackNatives
 
         assert task instanceof UnpackNativesTask
@@ -71,7 +69,6 @@ class UnpackNativesTaskTest {
         }
 
         def task = project.tasks.unpackNatives
-
         task.execute()
 
         assertUnpacked( 'windows', ['OpenAL32.dll', 'OpenAL64.dll', 'lwjgl.dll', 'lwjgl64.dll'] )
@@ -90,7 +87,6 @@ class UnpackNativesTaskTest {
         }
 
         def task = project.tasks.unpackNatives
-
         task.execute()
 
         assertUnpacked( 'windows', ['OpenAL32.dll', 'OpenAL64.dll', 'lwjgl.dll', 'lwjgl64.dll'] )
