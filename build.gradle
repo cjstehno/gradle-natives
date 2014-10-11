@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
+group='com.stehno'
+version=0.2
+
 buildscript {
     repositories {
         maven { url 'http://jcenter.bintray.com' }
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
     }
 }
 
 apply plugin:'groovy'
 apply plugin:'maven'
 apply plugin:'maven-publish'
-apply plugin:'bintray'
+apply plugin:'com.jfrog.bintray'
 
 repositories {
 	jcenter()
@@ -37,6 +40,7 @@ dependencies {
 	compile localGroovy()
 
     testCompile 'junit:junit:4.11'
+    testCompile 'org.mockito:mockito-all:1.9.5'
 }
 
 publishing {
@@ -48,10 +52,10 @@ publishing {
 }
 
 task wrapper( type:Wrapper) {
-    gradleVersion = '1.10'
+    gradleVersion = '2.1'
 }
 
-// NOTE: when running this you still need to go to web and publish updates
+// NOTE: run bintrayUpload and then go to web and publish.
 bintray {
     user = property('bintray-user')
     key = property('bintray-key')
