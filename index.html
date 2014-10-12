@@ -48,6 +48,14 @@ buildscript {
 apply plugin:'com.stehno.natives'
 </code></pre>
 
+Alternately, you can use the new <code>plugins</code> block with Gradle 2.1:
+
+<pre><code>
+plugins {
+	id 'com.stehno.natives' version '0.2'
+}
+</code></pre>
+
 <p>And then configure the dependency libraries you want searched by adding a configuration block, such as:</p>
 
 <pre><code>
