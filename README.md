@@ -13,9 +13,7 @@ To add the plugin to your project, add the following to your `build.gradle` file
 ```groovy
 buildscript {
     repositories {
-        maven {
-            url 'http://dl.bintray.com/cjstehno/public/'
-        }
+        jcenter()
     }
 
     dependencies {
@@ -24,6 +22,14 @@ buildscript {
 }
 
 apply plugin:'com.stehno.natives'
+```
+
+Alternately, you can use the new plug definition block in Gradle 2.1 and beyond.
+
+```groovy
+plugins {
+	id 'com.stehno.natives' version '0.2'
+}
 ```
 
 ## Usage
@@ -56,7 +62,10 @@ of the configured platform).
 
 ## References
 
+* http://cjstehno.github.io/gradle-natives
 * https://github.com/cjstehno/coffeaelectronica/wiki/Going-Native-with-Gradle
 
 
 [![Build Status](https://drone.io/github.com/cjstehno/gradle-natives/status.png)](https://drone.io/github.com/cjstehno/gradle-natives/latest)
+
+[ ![Download](https://api.bintray.com/packages/cjstehno/public/gradle-natives/images/download.svg) ](https://bintray.com/cjstehno/public/gradle-natives/_latestVersion)

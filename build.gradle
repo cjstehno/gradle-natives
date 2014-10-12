@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-group='com.stehno'
-version=0.2
-
-buildscript {
-    repositories {
-        maven { url 'http://jcenter.bintray.com' }
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
-    }
+ 
+plugins {
+    id 'com.jfrog.bintray' version '0.6'
 }
 
 apply plugin:'groovy'
 apply plugin:'maven'
 apply plugin:'maven-publish'
-apply plugin:'com.jfrog.bintray'
+
+group='com.stehno'
+version=0.2
 
 repositories {
 	jcenter()
@@ -68,7 +62,8 @@ task wrapper( type:Wrapper) {
     gradleVersion = '2.1'
 }
 
-// NOTE: run bintrayUpload and then go to web and publish.
+// NOTE: run bintrayUpload and then go to web and publish. 
+//       - ensure that the gradle-plugin attribute is on the version
 bintray {
     user = property('bintray-user')
     key = property('bintray-key')
@@ -81,5 +76,8 @@ bintray {
         desc = 'Gradle plugin for managing native libraries associated with Java projects.'
         licenses = ['Apache-2.0']
         labels = ['gradle', 'groovy', 'native']
+		version {
+			attributes = [ 'gradle-plugin': 'com.stehno.natives:com.stehno:gradle-natives' ]
+		}
     }
 }
