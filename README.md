@@ -17,7 +17,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.stehno:gradle-natives:0.2'
+        classpath 'com.stehno:gradle-natives:0.2.1'
     }
 }
 
@@ -28,9 +28,11 @@ Alternately, you can use the new plug definition block in Gradle 2.1 and beyond.
 
 ```groovy
 plugins {
-	id 'com.stehno.natives' version '0.2'
+	id 'com.stehno.natives' version '0.2.1'
 }
 ```
+
+The plugin is compiled on Java 7.
 
 ## Usage
 
