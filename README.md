@@ -4,7 +4,7 @@ A Gradle plugin to aid in working with Java-based project that provide supportin
 
 ## Build
 
-`gradle clean build`
+`gradlew clean build`
 
 ## Installation
 
@@ -17,7 +17,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.stehno:gradle-natives:0.2.1'
+        classpath 'com.stehno:gradle-natives:0.2.2'
     }
 }
 
@@ -28,7 +28,7 @@ Alternately, you can use the new plug definition block in Gradle 2.1 and beyond.
 
 ```groovy
 plugins {
-	id 'com.stehno.natives' version '0.2.1'
+	id 'com.stehno.natives' version '0.2.2'
 }
 ```
 
@@ -56,7 +56,7 @@ are specified (value left null), all supported platforms will be assumed.
 Then to add the native libraries to the build, simply run:
 
 ```
-gradle unpackNatives
+gradlew unpackNatives
 ```
 
 Which will add the native libraries to the build under the directory `build/natives/PLATFORM` (where PLATFORM is the name
