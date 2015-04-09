@@ -12,23 +12,24 @@ To add the plugin to your project, add the following to your `build.gradle` file
 
 ```groovy
 buildscript {
-    repositories {
-        jcenter()
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
     }
-
-    dependencies {
-        classpath 'com.stehno:gradle-natives:0.2.2'
-    }
+  }
+  dependencies {
+    classpath "gradle.plugin.com.stehno:gradle-natives:0.2.3"
+  }
 }
 
-apply plugin:'com.stehno.natives'
+apply plugin: "com.stehno.natives"
 ```
 
 Alternately, you can use the new plug definition block in Gradle 2.1 and beyond.
 
 ```groovy
 plugins {
-	id 'com.stehno.natives' version '0.2.2'
+	id 'com.stehno.natives' version '0.2.3'
 }
 ```
 

@@ -15,16 +15,15 @@
  */
  
 plugins {
-    id 'com.jfrog.bintray' version '1.1'
+    id 'com.gradle.plugin-publish' version '0.9.0'
 }
 
 apply plugin:'groovy'
-apply plugin:'maven'
-apply plugin:'maven-publish'
 
 group='com.stehno'
-version='0.2.2'
+version='0.2.3'
 
+// explicit requests were made to build under Java 7
 sourceCompatibility = 7
 targetCompatibility = 7
 
@@ -40,47 +39,20 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.9.5'
 }
 
-task sourcesJar(type: Jar) {
-    description = 'Creates sources JAR.'
-    classifier = 'sources'
-
-    from project.sourceSets.main.allSource
-}
-
-artifacts {
-	archives jar
-	archives sourcesJar
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication){
-            artifact jar
-			artifact sourcesJar
-        }
-    }
-}
-
 task wrapper( type:Wrapper) {
     gradleVersion = '2.3'
 }
 
-// NOTE: run bintrayUpload and then go to web and publish. 
-//       - ensure that the gradle-plugin attribute is on the version
-bintray {
-    user = property('bintray-user')
-    key = property('bintray-key')
+pluginBundle {
+    website = 'http://cjstehno.github.io/gradle-natives/'
+    vcsUrl = 'https://github.com/cjstehno/gradle-natives'
+    description = 'Gradle plugin to aid in managing native libraries associated with Java-based projects.'
+    tags = ['gradle', 'groovy', 'native']
 
-    publications = ['mavenJava']
-
-    pkg {
-        repo = 'public'
-        name = 'gradle-natives'
-        desc = 'Gradle plugin for managing native libraries associated with Java projects.'
-        licenses = ['Apache-2.0']
-        labels = ['gradle', 'groovy', 'native']
-		version {
-			attributes = [ 'gradle-plugin': 'com.stehno.natives:com.stehno:gradle-natives' ]
-		}
+    plugins {
+        greetingsPlugin {
+            id = 'com.stehno.natives'
+            displayName = 'Gradle-Natives Plugin'
+        }
     }
 }
