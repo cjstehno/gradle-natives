@@ -37,22 +37,23 @@ add the following to your <code>gradle.build</code> file:</p>
 <pre><code>
 buildscript {
     repositories {
-        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
-
     dependencies {
-        classpath 'com.stehno:gradle-natives:0.2.2'
+        classpath "gradle.plugin.com.stehno:gradle-natives:0.2.3"
     }
 }
 
-apply plugin:'com.stehno.natives'
+apply plugin: "com.stehno.natives"
 </code></pre>
 
 Alternately, you can use the new <code>plugins</code> block with Gradle 2.1:
 
 <pre><code>
 plugins {
-	id 'com.stehno.natives' version '0.2.2'
+	id 'com.stehno.natives' version '0.2.3'
 }
 </code></pre>
 
