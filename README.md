@@ -70,5 +70,3 @@ of the configured platform).
 
 
 [![Build Status](https://drone.io/github.com/cjstehno/gradle-natives/status.png)](https://drone.io/github.com/cjstehno/gradle-natives/latest)
-
-[ ![Download](https://api.bintray.com/packages/cjstehno/public/gradle-natives/images/download.svg) ](https://bintray.com/cjstehno/public/gradle-natives/_latestVersion)
