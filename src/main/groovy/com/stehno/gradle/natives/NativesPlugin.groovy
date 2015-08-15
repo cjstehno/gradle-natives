@@ -45,7 +45,7 @@ class NativesPlugin implements Plugin<Project> {
                 def configuredJars = extension.configuredJars()
                 if( configuredJars ){
                     extension.configuredPlatforms().each { platform->
-                        File platformDir = project.file("build/natives/${platform.os}")
+                        File platformDir = project.file("${project.buildDir}/natives/${platform.os}")
 
                         project.mkdir platformDir
 

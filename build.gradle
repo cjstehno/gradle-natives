@@ -21,7 +21,7 @@ plugins {
 apply plugin:'groovy'
 
 group='com.stehno'
-version='0.2.3'
+version='0.2.4'
 
 // explicit requests were made to build under Java 7
 sourceCompatibility = 7

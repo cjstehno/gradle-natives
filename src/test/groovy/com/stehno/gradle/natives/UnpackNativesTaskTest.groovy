@@ -77,6 +77,22 @@ class UnpackNativesTaskTest {
         assertNotExists 'build/natives/osx'
     }
 
+    @Test void 'usage: single platform non-standard build dir'(){
+        project.buildDir = 'results'
+        project.natives {
+            jars = ['lwjgl-platform-2.9.1-natives-windows']
+            platforms = Platform.WINDOWS
+        }
+
+        def task = project.tasks.unpackNatives
+        task.execute()
+
+        assertUnpacked( 'windows', ['OpenAL32.dll', 'OpenAL64.dll', 'lwjgl.dll', 'lwjgl64.dll'], 'results' )
+
+        assertNotExists 'results/natives/linux'
+        assertNotExists 'results/natives/osx'
+    }
+
     @Test void 'usage: undefined platform (all)'(){
         project.natives {
             jars = [
@@ -98,11 +114,11 @@ class UnpackNativesTaskTest {
         assert !new File( projectRoot, relPath ).exists()
     }
 
-    private void assertUnpacked( final String platform, final Collection libs ){
-        assert new File( projectRoot , 'build' ).exists()
-        assert new File( projectRoot , 'build/natives' ).exists()
+    private void assertUnpacked( final String platform, final Collection libs, final String buildDir='build'){
+        assert new File( projectRoot , buildDir ).exists()
+        assert new File( projectRoot , "${buildDir}/natives").exists()
 
-        def platDir = new File( projectRoot , "build/natives/$platform" )
+        def platDir = new File( projectRoot , "${buildDir}/natives/$platform" )
         assert platDir.exists()
 
         def nativeFiles = platDir.listFiles()

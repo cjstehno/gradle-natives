@@ -18,7 +18,6 @@ package com.stehno.gradle.natives
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 
 import java.util.jar.JarEntry
@@ -47,7 +46,7 @@ class UnpackNativesTask extends DefaultTask {
             jarFile.entries().findAll { JarEntry je-> platform.acceptsExtension( je.name ) }.each { JarEntry jef->
                 logger.info 'Unpacking: {}', jef.name
 
-                project.file("build/natives/${platform.os}/${jef.name}").bytes = jarFile.getInputStream(jef).bytes
+                project.file("${project.buildDir}/natives/${platform.os}/${jef.name}").bytes = jarFile.getInputStream(jef).bytes
             }
         }
     }
