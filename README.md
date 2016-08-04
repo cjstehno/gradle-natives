@@ -2,6 +2,8 @@
 
 A Gradle plugin to aid in working with Java-based project that provide supporting native libraries.
 
+> ⚠️ Recently, JOGL and LWJGL have changed the layouts of their jars with respect to where the native libraries are located. This causes the plugin to stop working for those libraries. The way the plugin resolves the native libraries will need to be addressed and refactored. I don't really use this plugin, nor do I have a lot of time to work on it... so unless someone wants to create a pull request, it might be a while. If you use this plugin and this issue will cause problems for you, feel free to comment on [#15](https://github.com/cjstehno/gradle-natives/issues/15) to that effect - if there is enough interest, I will feel bad and fix it sooner. :-)
+
 ## Build
 
 `gradlew clean build`
