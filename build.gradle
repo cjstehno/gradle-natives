@@ -15,13 +15,13 @@
  */
  
 plugins {
-    id 'com.gradle.plugin-publish' version '0.9.0'
+    id 'groovy'
+    id 'com.github.hierynomus.license' version '0.13.1'
+    id 'com.gradle.plugin-publish' version '0.9.4'
 }
 
-apply plugin:'groovy'
-
 group='com.stehno'
-version='0.2.4'
+version='0.3.0'
 
 // explicit requests were made to build under Java 7
 sourceCompatibility = 7
@@ -55,4 +55,11 @@ pluginBundle {
             displayName = 'Gradle-Natives Plugin'
         }
     }
+}
+
+license {
+    header rootProject.file('license_header.txt')
+    ext.name = 'Christopher J. Stehno'
+    ext.email = 'chris@stehno.com'
+    ext.year = Calendar.instance.get(Calendar.YEAR)
 }
