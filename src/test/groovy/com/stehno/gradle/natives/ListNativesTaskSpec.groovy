@@ -109,7 +109,6 @@ class ListNativesTaskSpec extends Specification {
         BuildResult result = gradleRunner(['listNatives']).build()
 
         then:
-        println result.output.stripIndent()
         result.output.stripIndent().contains('''
             Native libraries found for configurations (compile, runtime)...
              - lwjgl-platform-2.9.1-natives-windows.jar:

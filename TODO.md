@@ -7,6 +7,8 @@
 - code coverage and reporting
 - new updated version of the blog post
 
+- see about downloading the test libs during build ratehr than including in project
+
 - new DSL
 
 uses classpath scanning to find all the native files in the specified dependencies (or all) for the specified 

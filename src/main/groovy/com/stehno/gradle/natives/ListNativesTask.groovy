@@ -18,26 +18,13 @@ package com.stehno.gradle.natives
 import com.stehno.gradle.natives.ext.NativesExtension
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
-import org.gradle.api.artifacts.ResolvedArtifact
-import org.gradle.api.artifacts.ResolvedDependency
 import org.gradle.api.tasks.TaskAction
-
-import java.util.jar.JarEntry
-import java.util.jar.JarFile
 
 /**
  * TODO: document
  */
 @CompileStatic
 class ListNativesTask extends DefaultTask {
-
-    /*
-        FIXME: support
-            - dependency includes
-            - dependency excludes
-            - lib include
-            - lib exclude
-     */
 
     ListNativesTask() {
         group = 'Natives'
@@ -49,57 +36,11 @@ class ListNativesTask extends DefaultTask {
 
         logger.lifecycle "Native libraries found for configurations (${extension.configurations.join(', ')})..."
 
-        def foundLibs = [:]
-
-        findDependencyArtifacts(extension.configurations).each { File artifactFile ->
-            foundLibs[artifactFile.name] = []
-
-            (extension.platforms as Collection<Platform>).each { Platform platform ->
-                Set<String> nativeLibs = findNatives(platform, artifactFile) { JarEntry entry -> entry.name }
-                nativeLibs.each { String lib ->
-                    List<String> platLibs = foundLibs[artifactFile.name] as List<String>
-                    platLibs << ("[${platform.name()}] $lib" as String)
-                }
-            }
-        }
-
-        foundLibs.findAll { k, v -> v }.each { art, libs ->
-            logger.lifecycle " - $art:"
+        NativeLibResolver.resolveNames(project, extension).findAll { File art, List<NativeLibName> libs -> libs }.each { File art, List<NativeLibName> libs ->
+            logger.lifecycle " - ${art.name}:"
             libs.each { lib ->
-                logger.lifecycle "\t$lib"
+                logger.lifecycle "\t[${lib.platform.name()}] ${lib.name}"
             }
-        }
-    }
-
-    private static <T> Set<T> findNatives(final Platform platform, final File artifactFile, final Closure<T> extractor) {
-        Set<T> libs = new HashSet<>()
-
-        JarFile jar = new JarFile(artifactFile)
-        jar.entries().findAll { JarEntry entry -> platform.acceptsExtension(entry.name) }.collect { entry ->
-            libs << extractor.call(entry)
-        }
-
-        libs
-    }
-
-    private Set<File> findDependencyArtifacts(final Collection<String> configurations) {
-        Set<File> coords = new HashSet<>()
-
-        (configurations ?: project.configurations.names).each { String cname ->
-            project.configurations.getByName(cname).resolvedConfiguration.firstLevelModuleDependencies.each { ResolvedDependency dep ->
-                collectDependencies(coords, dep)
-            }
-        }
-
-        coords
-    }
-
-    static void collectDependencies(final Set<File> found, final ResolvedDependency dep) {
-        dep.moduleArtifacts.each { ResolvedArtifact artifact ->
-            found << artifact.file
-        }
-        dep.children.each { child ->
-            collectDependencies(found, child)
         }
     }
 }
