@@ -26,6 +26,8 @@ import spock.lang.Specification
 class ListNativesTaskSpec extends Specification {
 
     // TODO: test with different gradle versions: .withGradleVersion()
+    // TODO: test dep filters
+    // TODO: test lib filters
 
     @Rule public TemporaryFolder projectDir = new TemporaryFolder()
 

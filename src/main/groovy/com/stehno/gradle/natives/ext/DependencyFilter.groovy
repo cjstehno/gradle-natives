@@ -22,4 +22,8 @@ class DependencyFilter {
 
     Collection<String> include = []
     Collection<String> exclude = []
+
+    boolean isEmpty() {
+        !include && !exclude
+    }
 }

@@ -15,6 +15,7 @@
  */
 package com.stehno.gradle.natives
 
+import com.stehno.gradle.natives.ext.DependencyFilter
 import com.stehno.gradle.natives.ext.NativesExtension
 import groovy.transform.CompileStatic
 import groovy.transform.Immutable
@@ -30,23 +31,16 @@ import java.util.jar.JarFile
  */
 @CompileStatic
 class NativeLibResolver {
-
-    /*
-    FIXME: support
-        - dependency includes - only search these dependencies for libs
-        - dependency excludes - excluce thse from the search
-        - lib include
-        - lib exclude
- */
+    // TODO: this could do with some refactoring/cleanup
 
     static Map<File, List<NativeLibName>> resolveNames(final Project project, final NativesExtension extension) {
         Map<File, List<NativeLibName>> foundLibs = [:]
 
-        findDependencyArtifacts(project, extension.configurations).each { File artifactFile ->
+        findDependencyArtifacts(project, extension.configurations, extension.dependencies).each { File artifactFile ->
             foundLibs[artifactFile] = [] as List<NativeLibName>
 
             (extension.platforms as Collection<Platform>).each { Platform platform ->
-                Set<String> nativeLibs = findNatives(platform, artifactFile) { JarEntry entry -> entry.name }
+                Set<String> nativeLibs = findNatives(platform, artifactFile, extension.libs) { JarEntry entry -> entry.name }
                 nativeLibs.each { String lib ->
                     (foundLibs[artifactFile] as List<NativeLibName>) << new NativeLibName(platform, lib)
                 }
@@ -56,23 +50,31 @@ class NativeLibResolver {
         foundLibs
     }
 
-    static <T> Set<T> findNatives(final Platform platform, final File artifactFile, final Closure<T> extractor) {
+    static <T> Set<T> findNatives(final Platform platform, final File artifactFile, final DependencyFilter filter, final Closure<T> extractor) {
         Set<T> libs = new HashSet<>()
 
         JarFile jar = new JarFile(artifactFile)
-        jar.entries().findAll { JarEntry entry -> platform.acceptsExtension(entry.name) }.collect { entry ->
+        jar.entries().findAll { JarEntry entry ->
+            platform.acceptsExtension(entry.name)
+        }.findAll { entry ->
+            !filter.include || (entry as JarEntry).name in filter.include
+        }.findAll { entry ->
+            !filter.exclude || !((entry as JarEntry).name in filter.exclude)
+        }.collect { entry ->
             libs << extractor.call(entry)
         }
 
         libs
     }
 
-    static Set<File> findDependencyArtifacts(final Project project, final Collection<String> configurations) {
+    static Set<File> findDependencyArtifacts(final Project project, final Collection<String> configurations, final DependencyFilter filter) {
         Set<File> coords = new HashSet<>()
 
         (configurations ?: project.configurations.names).each { String cname ->
             project.configurations.getByName(cname).resolvedConfiguration.firstLevelModuleDependencies.each { ResolvedDependency dep ->
-                collectDependencies(coords, dep)
+                if ((filter.include && dep.name in filter.include) || (filter.exclude && !(dep.name in filter.exclude)) || filter.empty) {
+                    collectDependencies(coords, dep)
+                }
             }
         }
 
