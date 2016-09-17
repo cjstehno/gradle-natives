@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.stehno.gradle.natives
-
-import com.stehno.gradle.natives.ext.NativesExtension
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+package com.stehno.gradle.natives.ext
 
 /**
- * Gradle plugin providing assistance with managing the native components of Java-based libraries.
+ * Created by cjstehno on 9/17/16.
  */
-class NativesPlugin implements Plugin<Project> {
+class DependencyFilter {
 
-    void apply( final Project project ){
-        project.extensions.create('natives', NativesExtension)
-
-        project.task 'listNatives', type:ListNativesTask
-    }
+    Collection<String> include = []
+    Collection<String> exclude = []
 }

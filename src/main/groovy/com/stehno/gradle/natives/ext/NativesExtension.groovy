@@ -13,31 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.stehno.gradle.natives
+package com.stehno.gradle.natives.ext
 
-import java.util.jar.JarFile
+import com.stehno.gradle.natives.Platform
 
 /**
- * Simple container for jar references by platform.
+ * FIXME: document
  */
-class PlatformJars {
+class NativesExtension {
 
-    private final Map<Platform, Collection<JarFile>> jars = new EnumMap<>(Platform)
+    Collection<String> configurations = ['compile', 'runtime']
 
-    void putAt(final Platform platform, final JarFile jar) {
-        def collection = jars[platform]
-        if (!collection) {
-            jars[platform] = [jar]
-        } else {
-            collection << jar
-        }
-    }
+    final DependencyFilter dependencies = new DependencyFilter()
+    final DependencyFilter libs = new DependencyFilter()
 
-    void each(Closure closure) {
-        jars.each { k,v->
-            v.each { i->
-                closure( k, i )
-            }
-        }
-    }
+    Collection<Platform> platforms = [Platform.current()]
+
+    String outputDir
 }
