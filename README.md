@@ -66,8 +66,12 @@ of the configured platform).
 
 ## References
 
-* http://cjstehno.github.io/gradle-natives
-* https://github.com/cjstehno/coffeaelectronica/wiki/Going-Native-with-Gradle
+* Site: http://cjstehno.github.io/gradle-natives
+* Blog Post: http://coffeaelectronica.com/blog/2014/going-native-with-gradle.html
 
 
 [![Build Status](https://drone.io/github.com/cjstehno/gradle-natives/status.png)](https://drone.io/github.com/cjstehno/gradle-natives/latest)
+
+
+
+FIXME: add notes about how resolution is performed and that the dependencies with native libs must be on the classpath

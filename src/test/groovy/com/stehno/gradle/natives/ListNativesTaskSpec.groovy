@@ -269,7 +269,7 @@ class ListNativesTaskSpec extends Specification {
     private void buildFile(final Map<String, Object> config = [:]) {
         File buildFile = projectDir.newFile('build.gradle')
         buildFile.text = """
-            import com.stehno.gradle.natives.Platform
+            import com.stehno.gradle.natives.ext.Platform
 
             plugins {
                 id 'com.stehno.natives'
@@ -291,7 +291,7 @@ class ListNativesTaskSpec extends Specification {
 
     private static boolean totalSuccess(final BuildResult result) {
         result.tasks.every { BuildTask task ->
-            task.outcome == TaskOutcome.SUCCESS
+            task.outcome == TaskOutcome.SUCCESS || task.outcome == TaskOutcome.UP_TO_DATE
         }
     }
 

@@ -17,6 +17,7 @@ package com.stehno.gradle.natives
 
 import com.stehno.gradle.natives.ext.LibraryFilter
 import com.stehno.gradle.natives.ext.NativesExtension
+import com.stehno.gradle.natives.ext.Platform
 import groovy.transform.CompileStatic
 import groovy.transform.Immutable
 import org.gradle.api.Project
@@ -40,10 +41,27 @@ class NativeLibResolver {
             foundLibs[artifactFile] = [] as List<NativeLibName>
 
             (extension.platforms as Collection<Platform>).each { Platform platform ->
-                Set<String> nativeLibs = findNatives(platform, artifactFile, extension.libraries) { JarEntry entry -> entry.name }
+                Set<String> nativeLibs = findNatives(platform, artifactFile, extension.libraries) { JarFile jar, JarEntry entry -> entry.name }
                 nativeLibs.each { String lib ->
                     (foundLibs[artifactFile] as List<NativeLibName>) << new NativeLibName(platform, lib)
                 }
+            }
+        }
+
+        foundLibs
+    }
+
+    static Map<File, List<NativeLibFile>> resolveFiles(final Project project, final NativesExtension extension) {
+        Map<File, List<NativeLibFile>> foundLibs = [:]
+
+        findDependencyArtifacts(project, extension.configurations).each { File artifactFile ->
+            foundLibs[artifactFile] = [] as List<NativeLibFile>
+
+            (extension.platforms as Collection<Platform>).each { Platform platform ->
+                Set<NativeLibFile> nativeLibs = findNatives(platform, artifactFile, extension.libraries) { JarFile jar, JarEntry entry ->
+                    new NativeLibFile(platform, jar, entry)
+                }
+                (foundLibs[artifactFile] as List<NativeLibFile>).addAll(nativeLibs)
             }
         }
 
@@ -61,7 +79,7 @@ class NativeLibResolver {
         }.findAll { entry ->
             !filter.exclude || !((entry as JarEntry).name in filter.exclude)
         }.collect { entry ->
-            libs << extractor.call(entry)
+            libs << extractor.call(jar, entry)
         }
 
         libs
@@ -94,4 +112,12 @@ class NativeLibName {
 
     Platform platform
     String name
+}
+
+@Immutable(knownImmutableClasses = [JarFile, JarEntry])
+class NativeLibFile {
+
+    Platform platform
+    JarFile jar
+    JarEntry entry
 }

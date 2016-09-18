@@ -20,7 +20,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import static com.stehno.gradle.natives.NativeLibResolver.findNatives
-import static com.stehno.gradle.natives.Platform.*
+import static com.stehno.gradle.natives.ext.Platform.*
 
 class NativeLibResolverSpec extends Specification {
 
@@ -29,7 +29,7 @@ class NativeLibResolverSpec extends Specification {
         File file = new File(NativeLibResolverSpec.getResource("/lwjgl-platform-2.9.1-natives-${platform.os}.jar").toURI())
 
         when:
-        def natives = findNatives(platform, file, new LibraryFilter()) { jar -> jar.name }
+        def natives = findNatives(platform, file, new LibraryFilter()) { jar, entry -> entry.name }
 
         then:
         natives.size() == results.size()
@@ -49,7 +49,7 @@ class NativeLibResolverSpec extends Specification {
         when:
         def natives = findNatives(platform, file, new LibraryFilter(
             include: ['libopenal64.so', 'openal.dylib', 'OpenAL64.dll']
-        )) { jar -> jar.name }
+        )) { jar, entry -> entry.name }
 
         then:
         natives.size() == results.size()
@@ -69,7 +69,7 @@ class NativeLibResolverSpec extends Specification {
         when:
         def natives = findNatives(platform, file, new LibraryFilter(
             exclude: ['lwjgl.dll', 'libopenal64.so', 'openal.dylib']
-        )) { jar -> jar.name }
+        )) { jar, entry -> entry.name }
 
         then:
         natives.size() == results.size()

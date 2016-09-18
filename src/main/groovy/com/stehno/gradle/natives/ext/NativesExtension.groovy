@@ -15,7 +15,6 @@
  */
 package com.stehno.gradle.natives.ext
 
-import com.stehno.gradle.natives.Platform
 import groovy.transform.TypeChecked
 
 /**
@@ -44,7 +43,7 @@ class NativesExtension {
      *
      * A replacement token <code>:platform</code> may be added which will be replaced by the platform value for the each native library.
      */
-    String outputDir
+    String outputDir = 'natives'
 
     /**
      * Used to apply a filter to the search. No filtering by default.

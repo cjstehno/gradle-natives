@@ -24,9 +24,10 @@ import org.gradle.api.Project
  */
 class NativesPlugin implements Plugin<Project> {
 
-    void apply( final Project project ){
+    void apply(final Project project) {
         project.extensions.create('natives', NativesExtension)
 
-        project.task 'listNatives', type:ListNativesTask
+        project.task 'listNatives', type: ListNativesTask
+        project.task 'includeNatives', type: IncludeNativesTask
     }
 }

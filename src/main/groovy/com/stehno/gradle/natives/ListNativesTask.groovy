@@ -20,6 +20,8 @@ import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
+import static com.stehno.gradle.natives.NativeLibResolver.resolveNames
+
 /**
  * TODO: document
  */
@@ -29,6 +31,7 @@ class ListNativesTask extends DefaultTask {
     ListNativesTask() {
         group = 'Natives'
         description = 'Lists all native libraries in the configured libraries.'
+        dependsOn 'build'
     }
 
     @TaskAction @SuppressWarnings('GroovyUnusedDeclaration') void listNatives() {
@@ -36,7 +39,7 @@ class ListNativesTask extends DefaultTask {
 
         logger.lifecycle "Native libraries found for configurations (${extension.configurations.join(', ')})..."
 
-        NativeLibResolver.resolveNames(project, extension).findAll { File art, List<NativeLibName> libs -> libs }.each { File art, List<NativeLibName> libs ->
+        resolveNames(project, extension).findAll { File art, List<NativeLibName> libs -> libs }.each { File art, List<NativeLibName> libs ->
             logger.lifecycle " - ${art.name}:"
             libs.each { lib ->
                 logger.lifecycle "\t[${lib.platform.name()}] ${lib.name}"
