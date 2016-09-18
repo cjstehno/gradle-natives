@@ -15,7 +15,7 @@
  */
 package com.stehno.gradle.natives
 
-import com.stehno.gradle.natives.ext.DependencyFilter
+import com.stehno.gradle.natives.ext.LibraryFilter
 import com.stehno.gradle.natives.ext.NativesExtension
 import groovy.transform.CompileStatic
 import groovy.transform.Immutable
@@ -36,11 +36,11 @@ class NativeLibResolver {
     static Map<File, List<NativeLibName>> resolveNames(final Project project, final NativesExtension extension) {
         Map<File, List<NativeLibName>> foundLibs = [:]
 
-        findDependencyArtifacts(project, extension.configurations, extension.dependencies).each { File artifactFile ->
+        findDependencyArtifacts(project, extension.configurations).each { File artifactFile ->
             foundLibs[artifactFile] = [] as List<NativeLibName>
 
             (extension.platforms as Collection<Platform>).each { Platform platform ->
-                Set<String> nativeLibs = findNatives(platform, artifactFile, extension.libs) { JarEntry entry -> entry.name }
+                Set<String> nativeLibs = findNatives(platform, artifactFile, extension.libraries) { JarEntry entry -> entry.name }
                 nativeLibs.each { String lib ->
                     (foundLibs[artifactFile] as List<NativeLibName>) << new NativeLibName(platform, lib)
                 }
@@ -50,7 +50,7 @@ class NativeLibResolver {
         foundLibs
     }
 
-    static <T> Set<T> findNatives(final Platform platform, final File artifactFile, final DependencyFilter filter, final Closure<T> extractor) {
+    static <T> Set<T> findNatives(final Platform platform, final File artifactFile, final LibraryFilter filter, final Closure<T> extractor) {
         Set<T> libs = new HashSet<>()
 
         JarFile jar = new JarFile(artifactFile)
@@ -67,14 +67,12 @@ class NativeLibResolver {
         libs
     }
 
-    static Set<File> findDependencyArtifacts(final Project project, final Collection<String> configurations, final DependencyFilter filter) {
+    static Set<File> findDependencyArtifacts(final Project project, final Collection<String> configurations) {
         Set<File> coords = new HashSet<>()
 
         (configurations ?: project.configurations.names).each { String cname ->
             project.configurations.getByName(cname).resolvedConfiguration.firstLevelModuleDependencies.each { ResolvedDependency dep ->
-                if ((filter.include && dep.name in filter.include) || (filter.exclude && !(dep.name in filter.exclude)) || filter.empty) {
-                    collectDependencies(coords, dep)
-                }
+                collectDependencies(coords, dep)
             }
         }
 

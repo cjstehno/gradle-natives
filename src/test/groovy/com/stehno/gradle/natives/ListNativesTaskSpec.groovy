@@ -26,8 +26,6 @@ import spock.lang.Specification
 class ListNativesTaskSpec extends Specification {
 
     // TODO: test with different gradle versions: .withGradleVersion()
-    // TODO: test dep filters
-    // TODO: test lib filters
 
     @Rule public TemporaryFolder projectDir = new TemporaryFolder()
 
@@ -45,31 +43,30 @@ class ListNativesTaskSpec extends Specification {
     def 'listNatives with native dependencies should list them (default config)'() {
         given:
         buildFile([
-            dependencies: [/compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'/]
+            dependencies: /compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'/
         ])
 
         when: 'the task is run'
         BuildResult result = gradleRunner(['listNatives']).build()
 
         then:
-        result.output.stripIndent().contains('''
-            Native libraries found for configurations (compile, runtime)...
-             - jinput-platform-2.0.5-natives-linux.jar:
-            \t[LINUX] libjinput-linux.so
-            \t[LINUX] libjinput-linux64.so
-             - lwjgl-platform-2.9.1-natives-linux.jar:
-            \t[LINUX] libopenal64.so
-            \t[LINUX] liblwjgl.so
-            \t[LINUX] liblwjgl64.so
-            \t[LINUX] libopenal.so
-        '''.stripIndent())
+        textContainsLines result.output, [
+            '- jinput-platform-2.0.5-natives-linux.jar:',
+            '[LINUX] libjinput-linux.so',
+            '[LINUX] libjinput-linux64.so',
+            '- lwjgl-platform-2.9.1-natives-linux.jar:',
+            '[LINUX] libopenal64.so',
+            '[LINUX] liblwjgl.so',
+            '[LINUX] liblwjgl64.so',
+            '[LINUX] libopenal.so'
+        ]
     }
 
     def 'listNatives with native dependencies should list them (windows)'() {
         given:
         buildFile([
-            dependencies: [/compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'/],
-            natives:'''
+            dependencies: /compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'/,
+            natives     : '''
                 natives {
                     platforms = [Platform.WINDOWS]
                 }
@@ -80,27 +77,26 @@ class ListNativesTaskSpec extends Specification {
         BuildResult result = gradleRunner(['listNatives']).build()
 
         then:
-        result.output.stripIndent().contains('''
-            Native libraries found for configurations (compile, runtime)...
-             - lwjgl-platform-2.9.1-natives-windows.jar:
-            \t[WINDOWS] lwjgl.dll
-            \t[WINDOWS] OpenAL64.dll
-            \t[WINDOWS] OpenAL32.dll
-            \t[WINDOWS] lwjgl64.dll
-             - jinput-platform-2.0.5-natives-windows.jar:
-            \t[WINDOWS] jinput-dx8_64.dll
-            \t[WINDOWS] jinput-dx8.dll
-            \t[WINDOWS] jinput-wintab.dll
-            \t[WINDOWS] jinput-raw_64.dll
-            \t[WINDOWS] jinput-raw.dll
-        '''.stripIndent())
+        textContainsLines result.output, [
+            '- lwjgl-platform-2.9.1-natives-windows.jar:',
+            '[WINDOWS] lwjgl.dll',
+            '[WINDOWS] OpenAL64.dll',
+            '[WINDOWS] OpenAL32.dll',
+            '[WINDOWS] lwjgl64.dll',
+            '- jinput-platform-2.0.5-natives-windows.jar:',
+            '[WINDOWS] jinput-dx8_64.dll',
+            '[WINDOWS] jinput-dx8.dll',
+            '[WINDOWS] jinput-wintab.dll',
+            '[WINDOWS] jinput-raw_64.dll',
+            '[WINDOWS] jinput-raw.dll'
+        ]
     }
 
     def 'listNatives with native dependencies should list them (windows,linux)'() {
         given:
         buildFile([
-            dependencies: [/compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'/],
-            natives:'''
+            dependencies: /compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'/,
+            natives     : '''
                 natives {
                     platforms = [Platform.WINDOWS, Platform.LINUX]
                 }
@@ -111,28 +107,159 @@ class ListNativesTaskSpec extends Specification {
         BuildResult result = gradleRunner(['listNatives']).build()
 
         then:
-        result.output.stripIndent().contains('''
-            Native libraries found for configurations (compile, runtime)...
-             - lwjgl-platform-2.9.1-natives-windows.jar:
-            \t[WINDOWS] lwjgl.dll
-            \t[WINDOWS] OpenAL64.dll
-            \t[WINDOWS] OpenAL32.dll
-            \t[WINDOWS] lwjgl64.dll
-             - jinput-platform-2.0.5-natives-linux.jar:
-            \t[LINUX] libjinput-linux.so
-            \t[LINUX] libjinput-linux64.so
-             - lwjgl-platform-2.9.1-natives-linux.jar:
-            \t[LINUX] libopenal64.so
-            \t[LINUX] liblwjgl.so
-            \t[LINUX] liblwjgl64.so
-            \t[LINUX] libopenal.so
-             - jinput-platform-2.0.5-natives-windows.jar:
-            \t[WINDOWS] jinput-dx8_64.dll
-            \t[WINDOWS] jinput-dx8.dll
-            \t[WINDOWS] jinput-wintab.dll
-            \t[WINDOWS] jinput-raw_64.dll
-            \t[WINDOWS] jinput-raw.dll
-        '''.stripIndent())
+        textContainsLines result.output, [
+            '- lwjgl-platform-2.9.1-natives-windows.jar:',
+            '[WINDOWS] lwjgl.dll',
+            '[WINDOWS] OpenAL64.dll',
+            '[WINDOWS] OpenAL32.dll',
+            '[WINDOWS] lwjgl64.dll',
+            '- jinput-platform-2.0.5-natives-linux.jar:',
+            '[LINUX] libjinput-linux.so',
+            '[LINUX] libjinput-linux64.so',
+            '- lwjgl-platform-2.9.1-natives-linux.jar:',
+            '[LINUX] libopenal64.so',
+            '[LINUX] liblwjgl.so',
+            '[LINUX] liblwjgl64.so',
+            '[LINUX] libopenal.so',
+            '- jinput-platform-2.0.5-natives-windows.jar:',
+            '[WINDOWS] jinput-dx8_64.dll',
+            '[WINDOWS] jinput-dx8.dll',
+            '[WINDOWS] jinput-wintab.dll',
+            '[WINDOWS] jinput-raw_64.dll',
+            '[WINDOWS] jinput-raw.dll'
+        ]
+    }
+
+    def 'listNatives for some of the trouble libs on all platforms'() {
+        given:
+        buildFile([
+            dependencies: '''
+                compile 'org.lwjgl:lwjgl:3.0.0'
+                compile 'org.lwjgl:lwjgl-platform:3.0.0:natives-windows'
+                compile 'org.lwjgl:lwjgl-platform:3.0.0:natives-linux'
+                compile 'org.lwjgl:lwjgl-platform:3.0.0:natives-osx'
+            '''.stripIndent(),
+            natives     : '''
+                natives {
+                    platforms = Platform.all()
+                }
+            '''.stripIndent()
+        ])
+
+        when: 'the task is run'
+        BuildResult result = gradleRunner(['listNatives']).build()
+
+        then:
+        textContainsLines result.output, [
+            '- lwjgl-platform-3.0.0-natives-windows.jar:',
+            '[WINDOWS] lwjgl.dll',
+            '[WINDOWS] lwjgl32.dll',
+            '[WINDOWS] OpenAL.dll',
+            '[WINDOWS] jemalloc.dll',
+            '[WINDOWS] glfw.dll',
+            '[WINDOWS] glfw32.dll',
+            '[WINDOWS] jemalloc32.dll',
+            '[WINDOWS] OpenAL32.dll',
+            '- lwjgl-platform-3.0.0-natives-osx.jar:',
+            '[MAC] liblwjgl.dylib',
+            '[MAC] libjemalloc.dylib',
+            '[MAC] libglfw.dylib',
+            '[MAC] libopenal.dylib',
+            '- lwjgl-platform-3.0.0-natives-linux.jar:',
+            '[LINUX] libjemalloc.so',
+            '[LINUX] liblwjgl.so',
+            '[LINUX] libglfw.so',
+            '[LINUX] libopenal.so'
+        ]
+    }
+
+    def 'listNatives for some of the trouble libs on all platforms (lib excludes)'() {
+        given:
+        buildFile([
+            dependencies: '''
+                compile 'org.lwjgl:lwjgl:3.0.0'
+                compile 'org.lwjgl:lwjgl-platform:3.0.0:natives-windows'
+                compile 'org.lwjgl:lwjgl-platform:3.0.0:natives-linux'
+                compile 'org.lwjgl:lwjgl-platform:3.0.0:natives-osx'
+            '''.stripIndent(),
+            natives     : '''
+                natives {
+                    platforms = Platform.all()
+                    libraries.exclude = ['lwjgl32.dll', 'libjemalloc.dylib']
+                }
+            '''.stripIndent()
+        ])
+
+        when: 'the task is run'
+        BuildResult result = gradleRunner(['listNatives']).build()
+
+        then:
+        textContainsLines result.output, [
+            '- lwjgl-platform-3.0.0-natives-windows.jar:',
+            '[WINDOWS] lwjgl.dll',
+            '[WINDOWS] OpenAL.dll',
+            '[WINDOWS] jemalloc.dll',
+            '[WINDOWS] glfw.dll',
+            '[WINDOWS] glfw32.dll',
+            '[WINDOWS] jemalloc32.dll',
+            '[WINDOWS] OpenAL32.dll',
+            '- lwjgl-platform-3.0.0-natives-osx.jar:',
+            '[MAC] liblwjgl.dylib',
+            '[MAC] libglfw.dylib',
+            '[MAC] libopenal.dylib',
+            '- lwjgl-platform-3.0.0-natives-linux.jar:',
+            '[LINUX] libjemalloc.so',
+            '[LINUX] liblwjgl.so',
+            '[LINUX] libglfw.so',
+            '[LINUX] libopenal.so'
+        ]
+        textDoesNotContainLines result.output, ['[WINDOWS] lwjgl32.dll', '[MAC] libjemalloc.dylib',]
+    }
+
+    def 'listNatives for some of the trouble libs on all platforms (includes filter)'() {
+        given:
+        buildFile([
+            dependencies: '''
+                compile 'org.lwjgl:lwjgl:3.0.0'
+                compile 'org.lwjgl:lwjgl-platform:3.0.0:natives-windows'
+                compile 'org.lwjgl:lwjgl-platform:3.0.0:natives-linux'
+                compile 'org.lwjgl:lwjgl-platform:3.0.0:natives-osx'
+            '''.stripIndent(),
+            natives     : '''
+                natives {
+                    platforms = Platform.all()
+                    libraries.include = ['OpenAL.dll', 'libopenal.dylib', 'libopenal.so']
+                }
+            '''.stripIndent()
+        ])
+
+        when: 'the task is run'
+        BuildResult result = gradleRunner(['listNatives']).build()
+
+        then:
+        textContainsLines result.output, [
+            '- lwjgl-platform-3.0.0-natives-windows.jar:',
+            '[WINDOWS] OpenAL.dll',
+            '- lwjgl-platform-3.0.0-natives-osx.jar:',
+            '[MAC] libopenal.dylib',
+            '- lwjgl-platform-3.0.0-natives-linux.jar:',
+            '[LINUX] libopenal.so'
+        ]
+        textDoesNotContainLines result.output, [
+            '[WINDOWS] lwjgl.dll',
+            '[WINDOWS] lwjgl32.dll',
+            '[WINDOWS] jemalloc.dll',
+            '[WINDOWS] glfw.dll',
+            '[WINDOWS] glfw32.dll',
+            '[WINDOWS] jemalloc32.dll',
+            '[WINDOWS] OpenAL32.dll',
+            '[MAC] liblwjgl.dylib',
+            '[MAC] libjemalloc.dylib',
+            '[MAC] libglfw.dylib',
+            '[LINUX] libjemalloc.so',
+            '[LINUX] liblwjgl.so',
+            '[LINUX] libglfw.so',
+        ]
     }
 
     private void buildFile(final Map<String, Object> config = [:]) {
@@ -148,19 +275,31 @@ class ListNativesTaskSpec extends Specification {
                 jcenter()
             }
             dependencies {
-                ${config.dependencies?.join('\\n') ?: ''}
+                ${config.dependencies ?: ''}
             }
             ${config.natives ?: ''}
         """.stripIndent()
     }
 
     private GradleRunner gradleRunner(final List<String> args) {
-        GradleRunner.create().withPluginClasspath().withProjectDir(projectDir.root).withArguments(args)
+        GradleRunner.create().withPluginClasspath().withDebug(true).withProjectDir(projectDir.root).withArguments(args)
     }
 
     private static boolean totalSuccess(final BuildResult result) {
         result.tasks.every { BuildTask task ->
             task.outcome == TaskOutcome.SUCCESS
+        }
+    }
+
+    private static boolean textContainsLines(final String text, final Collection<String> lines, final boolean trimmed = true) {
+        lines.every { String line ->
+            text.contains(trimmed ? line.trim() : line)
+        }
+    }
+
+    private static boolean textDoesNotContainLines(final String text, final Collection<String> lines, final boolean trimmed = true) {
+        lines.every { String line ->
+            !text.contains(trimmed ? line.trim() : line)
         }
     }
 }

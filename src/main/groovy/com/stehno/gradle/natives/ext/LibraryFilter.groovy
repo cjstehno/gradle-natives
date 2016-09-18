@@ -15,10 +15,13 @@
  */
 package com.stehno.gradle.natives.ext
 
+import groovy.transform.TypeChecked
+
 /**
- * Created by cjstehno on 9/17/16.
+ * FIXME: document
  */
-class DependencyFilter {
+@TypeChecked
+class LibraryFilter {
 
     Collection<String> include = []
     Collection<String> exclude = []

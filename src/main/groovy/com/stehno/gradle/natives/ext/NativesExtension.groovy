@@ -16,18 +16,20 @@
 package com.stehno.gradle.natives.ext
 
 import com.stehno.gradle.natives.Platform
+import groovy.transform.TypeChecked
 
 /**
  * FIXME: document
  */
+@TypeChecked
 class NativesExtension {
 
     Collection<String> configurations = ['compile', 'runtime']
 
-    final DependencyFilter dependencies = new DependencyFilter()
-    final DependencyFilter libs = new DependencyFilter()
+    // FIXME: closure?
+    final LibraryFilter libraries = new LibraryFilter()
 
-    Collection<Platform> platforms = [Platform.current()]
+    Collection<Platform> platforms = Platform.all()
 
     String outputDir
 }

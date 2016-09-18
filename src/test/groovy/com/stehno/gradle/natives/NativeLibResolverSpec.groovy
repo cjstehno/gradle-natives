@@ -15,7 +15,7 @@
  */
 package com.stehno.gradle.natives
 
-import com.stehno.gradle.natives.ext.DependencyFilter
+import com.stehno.gradle.natives.ext.LibraryFilter
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -29,7 +29,7 @@ class NativeLibResolverSpec extends Specification {
         File file = new File(NativeLibResolverSpec.getResource("/lwjgl-platform-2.9.1-natives-${platform.os}.jar").toURI())
 
         when:
-        def natives = findNatives(platform, file, new DependencyFilter()) { jar -> jar.name }
+        def natives = findNatives(platform, file, new LibraryFilter()) { jar -> jar.name }
 
         then:
         natives.size() == results.size()
@@ -47,7 +47,7 @@ class NativeLibResolverSpec extends Specification {
         File file = new File(NativeLibResolverSpec.getResource("/lwjgl-platform-2.9.1-natives-${platform.os}.jar").toURI())
 
         when:
-        def natives = findNatives(platform, file, new DependencyFilter(
+        def natives = findNatives(platform, file, new LibraryFilter(
             include: ['libopenal64.so', 'openal.dylib', 'OpenAL64.dll']
         )) { jar -> jar.name }
 
@@ -67,7 +67,7 @@ class NativeLibResolverSpec extends Specification {
         File file = new File(NativeLibResolverSpec.getResource("/lwjgl-platform-2.9.1-natives-${platform.os}.jar").toURI())
 
         when:
-        def natives = findNatives(platform, file, new DependencyFilter(
+        def natives = findNatives(platform, file, new LibraryFilter(
             exclude: ['lwjgl.dll', 'libopenal64.so', 'openal.dylib']
         )) { jar -> jar.name }
 
