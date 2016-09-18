@@ -19,17 +19,44 @@ import com.stehno.gradle.natives.Platform
 import groovy.transform.TypeChecked
 
 /**
- * FIXME: document
+ * DSL Extension for configuring the native library resolution.
  */
 @TypeChecked
 class NativesExtension {
 
+    private LibraryFilter libraries = new LibraryFilter()
+
+    /**
+     * Specifies the build configurations which will be scanned for native libraries. The default is to search the "compile" and "runtime"
+     * configurations.
+     */
     Collection<String> configurations = ['compile', 'runtime']
 
-    // FIXME: closure?
-    final LibraryFilter libraries = new LibraryFilter()
-
+    /**
+     * Used to specify the OS platforms whose libraries will be resolved. All platforms are retrieved by default.
+     */
     Collection<Platform> platforms = Platform.all()
 
+    /**
+     * Used to specify the native library output directory. Defaults to <code>natives</code>.
+     *
+     * A relative path will be based on the project build directory.
+     *
+     * A replacement token <code>:platform</code> may be added which will be replaced by the platform value for the each native library.
+     */
     String outputDir
+
+    /**
+     * Used to apply a filter to the search. No filtering by default.
+     */
+    void libraries(@DelegatesTo(LibraryFilter) Closure closure) {
+        def filter = new LibraryFilter()
+        closure.delegate = filter
+        closure.call()
+        libraries = filter
+    }
+
+    LibraryFilter getLibraries() {
+        libraries
+    }
 }

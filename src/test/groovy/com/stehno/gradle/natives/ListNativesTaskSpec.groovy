@@ -185,7 +185,9 @@ class ListNativesTaskSpec extends Specification {
             natives     : '''
                 natives {
                     platforms = Platform.all()
-                    libraries.exclude = ['lwjgl32.dll', 'libjemalloc.dylib']
+                    libraries {
+                        exclude = ['lwjgl32.dll', 'libjemalloc.dylib']
+                    }
                 }
             '''.stripIndent()
         ])
@@ -228,7 +230,9 @@ class ListNativesTaskSpec extends Specification {
             natives     : '''
                 natives {
                     platforms = Platform.all()
-                    libraries.include = ['OpenAL.dll', 'libopenal.dylib', 'libopenal.so']
+                    libraries {
+                        include = ['OpenAL.dll', 'libopenal.dylib', 'libopenal.so']
+                    }
                 }
             '''.stripIndent()
         ])

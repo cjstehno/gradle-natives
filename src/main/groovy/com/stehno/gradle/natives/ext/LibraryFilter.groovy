@@ -18,15 +18,18 @@ package com.stehno.gradle.natives.ext
 import groovy.transform.TypeChecked
 
 /**
- * FIXME: document
+ * Filter object used to limit the scope of the resolved libraries.
  */
 @TypeChecked
 class LibraryFilter {
 
+    /**
+     * Limits the resolved libraries to only those provided in the list.
+     */
     Collection<String> include = []
-    Collection<String> exclude = []
 
-    boolean isEmpty() {
-        !include && !exclude
-    }
+    /**
+     * Limits the resolved libraries to only those NOT provided in the list.
+     */
+    Collection<String> exclude = []
 }
