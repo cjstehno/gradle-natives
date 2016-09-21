@@ -23,7 +23,7 @@ import org.gradle.api.tasks.TaskAction
 import static com.stehno.gradle.natives.NativeLibResolver.resolveNames
 
 /**
- * TODO: document
+ * Gradle task used to list the native libraries resolved by the applied configuration.
  */
 @CompileStatic
 class ListNativesTask extends DefaultTask {

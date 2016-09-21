@@ -28,12 +28,19 @@ import java.util.jar.JarEntry
 import java.util.jar.JarFile
 
 /**
- * FIXME: document
+ * Searches the project and resolves the native libraries based on the supplied configuration.
  */
 @CompileStatic
 class NativeLibResolver {
     // TODO: this could do with some refactoring/cleanup
 
+    /**
+     * Resolves the natives matching the supplied configuration - only the names are resolved.
+     *
+     * @param project
+     * @param extension
+     * @return
+     */
     static Map<File, List<NativeLibName>> resolveNames(final Project project, final NativesExtension extension) {
         Map<File, List<NativeLibName>> foundLibs = [:]
 
@@ -51,6 +58,13 @@ class NativeLibResolver {
         foundLibs
     }
 
+    /**
+     * Resolves the natives matching the supplied configuration.
+     *
+     * @param project
+     * @param extension
+     * @return
+     */
     static Map<File, List<NativeLibFile>> resolveFiles(final Project project, final NativesExtension extension) {
         Map<File, List<NativeLibFile>> foundLibs = [:]
 

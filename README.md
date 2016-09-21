@@ -1,6 +1,6 @@
 # Gradle Natives Plugin
 
-A Gradle plugin to aid in working with Java-based project that provide supporting native libraries.
+A Gradle plugin to aid in working with Java-based projects that provide supporting native libraries.
 
 ## Build
 
@@ -37,32 +37,38 @@ The plugin is compiled on Java 7.
 
 ## Usage
 
-To do anything useful with it, you need to configure it using the `natives` extension configuration, for example:
+Without any additional configuration, the plugin will find all native libraries in all `compile` and `runtime` dependency configurations, for all platforms, and unpack them into 
+the `build/natives` directory of your project. You can configure this behavior by adding a `natives` block to your `build.gradle` file. The default behavior has the following configuration:
 
-FIXME: rewrite this
 ```groovy
 natives {
-    jars = [ 'lwjgl-platform-2.9.1-natives-windows' ]
-    platforms = 'windows'
+    configurations = ['compile', 'runtime']
+    platforms = Platform.all()
+    outputDir = 'natives'
 }
 ```
 
-Which will find the specified jar in the project and extract the `.dll` files contained in it when the `unpackNatives` task is executed.
+A `libraries` Closure may also be added to filter the resolved libraries, such as:
 
-The `natives.jars` property accepts a single string or collection of strings representing names of jar files configured
-on the project classpath (from other dependencies). If the string does not end with ".jar" the extension will be added.
-
-The `platforms` property accepts a single string or single Platform enum value, as well as a collection of either (or both mixed). If no platforms
-are specified (value left null), all supported platforms will be assumed.
-
-Then to add the native libraries to the build, simply run:
-
+```groovy
+natives {
+    configurations = ['compile', 'runtime']
+    platforms = Platform.all()
+    outputDir = 'natives'
+    libraries {
+        exclude = ['somelib.dll']
+    }
+}
 ```
-gradlew unpackNatives
-```
 
-Which will add the native libraries to the build under the directory `build/natives/PLATFORM` (where PLATFORM is the name
-of the configured platform).
+There are two tasks provided by the plguin:
+
+* `listNatives` - lists all of the native libraries resolved by the current configuration.
+* `includeNatives` - includes (copies) the resolved native libraries into the configured output directory.
+
+## Warning
+
+This plugin only resolves native libraries that are on the project classpath as dependencies of the project (Gradle dependencies, either direct or transitive).
 
 ## References
 
@@ -71,7 +77,3 @@ of the configured platform).
 
 
 [![Build Status](https://drone.io/github.com/cjstehno/gradle-natives/status.png)](https://drone.io/github.com/cjstehno/gradle-natives/latest)
-
-
-
-FIXME: add notes about how resolution is performed and that the dependencies with native libs must be on the classpath

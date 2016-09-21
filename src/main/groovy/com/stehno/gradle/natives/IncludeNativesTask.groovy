@@ -24,7 +24,7 @@ import org.gradle.api.tasks.TaskAction
 import static com.stehno.gradle.natives.NativeLibResolver.resolveFiles
 
 /**
- * TODO: document
+ * Gradle task used to include the resolved native libraries in the project build based on the current configuration.
  */
 @CompileStatic
 class IncludeNativesTask extends DefaultTask {
