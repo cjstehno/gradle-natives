@@ -1,52 +1,40 @@
-/*
- * Copyright (c) 2014 Christopher J. Stehno
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- 
 plugins {
-    id 'com.gradle.plugin-publish' version '0.9.0'
+    id 'groovy'
+    id 'com.github.hierynomus.license' version '0.13.1'
+    id 'com.gradle.plugin-publish' version '0.9.4'
+    id 'maven-publish'
+    id 'java-gradle-plugin'
 }
 
-apply plugin:'groovy'
-
-group='com.stehno'
-version='0.2.4'
+group = 'com.stehno'
+version = '0.3.0'
 
 // explicit requests were made to build under Java 7
 sourceCompatibility = 7
 targetCompatibility = 7
 
 repositories {
-	jcenter()
+    jcenter()
 }
 
 dependencies {
-	compile gradleApi()
-	compile localGroovy()
+    compile gradleApi()
+    compile localGroovy()
 
-    testCompile 'junit:junit:4.11'
-    testCompile 'org.mockito:mockito-all:1.9.5'
+    testCompile 'junit:junit:4.12'
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude module: 'groovy-all'
+    }
 }
 
-task wrapper( type:Wrapper) {
-    gradleVersion = '2.3'
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14'
 }
 
 pluginBundle {
     website = 'http://cjstehno.github.io/gradle-natives/'
     vcsUrl = 'https://github.com/cjstehno/gradle-natives'
-    description = 'Gradle plugin to aid in managing native libraries associated with Java-based projects.'
+    description = 'Gradle plugin to aid in handling native libraries associated with Java-based projects.'
     tags = ['gradle', 'groovy', 'native']
 
     plugins {
@@ -55,4 +43,11 @@ pluginBundle {
             displayName = 'Gradle-Natives Plugin'
         }
     }
+}
+
+license {
+    header rootProject.file('license_header.txt')
+    ext.name = 'Christopher J. Stehno'
+    ext.email = 'chris@stehno.com'
+    ext.year = Calendar.instance.get(Calendar.YEAR)
 }

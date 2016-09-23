@@ -1,12 +1,10 @@
 # Gradle Natives Plugin
 
-A Gradle plugin to aid in working with Java-based project that provide supporting native libraries.
-
-> ⚠️ Recently, JOGL and LWJGL have changed the layouts of their jars with respect to where the native libraries are located. This causes the plugin to stop working for those libraries. The way the plugin resolves the native libraries will need to be addressed and refactored. I don't really use this plugin, nor do I have a lot of time to work on it... so unless someone wants to create a pull request, it might be a while. If you use this plugin and this issue will cause problems for you, feel free to comment on [#15](https://github.com/cjstehno/gradle-natives/issues/15) to that effect - if there is enough interest, I will feel bad and fix it sooner. :-)
+A Gradle plugin to aid in working with Java-based projects that provide supporting native libraries.
 
 ## Build
 
-`gradlew clean build`
+    ./gradlew clean build
 
 ## Installation
 
@@ -20,7 +18,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "gradle.plugin.com.stehno:gradle-natives:0.2.4"
+    classpath "gradle.plugin.com.stehno:gradle-natives:0.3.0"
   }
 }
 
@@ -31,7 +29,7 @@ Alternately, you can use the new plug definition block in Gradle 2.1 and beyond.
 
 ```groovy
 plugins {
-	id 'com.stehno.natives' version '0.2.4'
+	id 'com.stehno.natives' version '0.3.0'
 }
 ```
 
@@ -39,36 +37,43 @@ The plugin is compiled on Java 7.
 
 ## Usage
 
-To do anything useful with it, you need to configure it using the `natives` extension configuration, for example:
+Without any additional configuration, the plugin will find all native libraries in all `compile` and `runtime` dependency configurations, for all platforms, and unpack them into 
+the `build/natives` directory of your project. You can configure this behavior by adding a `natives` block to your `build.gradle` file. The default behavior has the following configuration:
 
 ```groovy
 natives {
-    jars = [ 'lwjgl-platform-2.9.1-natives-windows' ]
-    platforms = 'windows'
+    configurations = ['compile', 'runtime']
+    platforms = Platform.all()
+    outputDir = 'natives'
 }
 ```
 
-Which will find the specified jar in the project and extract the `.dll` files contained in it when the `unpackNatives` task is executed.
+A `libraries` Closure may also be added to filter the resolved libraries, such as:
 
-The `natives.jars` property accepts a single string or collection of strings representing names of jar files configured
-on the project classpath (from other dependencies). If the string does not end with ".jar" the extension will be added.
-
-The `platforms` property accepts a single string or single Platform enum value, as well as a collection of either (or both mixed). If no platforms
-are specified (value left null), all supported platforms will be assumed.
-
-Then to add the native libraries to the build, simply run:
-
+```groovy
+natives {
+    configurations = ['compile', 'runtime']
+    platforms = Platform.all()
+    outputDir = 'natives'
+    libraries {
+        exclude = ['somelib.dll']
+    }
+}
 ```
-gradlew unpackNatives
-```
 
-Which will add the native libraries to the build under the directory `build/natives/PLATFORM` (where PLATFORM is the name
-of the configured platform).
+There are two tasks provided by the plguin:
+
+* `listNatives` - lists all of the native libraries resolved by the current configuration.
+* `includeNatives` - includes (copies) the resolved native libraries into the configured output directory.
+
+## Warning
+
+This plugin only resolves native libraries that are on the project classpath as dependencies of the project (Gradle dependencies, either direct or transitive).
 
 ## References
 
-* http://cjstehno.github.io/gradle-natives
-* https://github.com/cjstehno/coffeaelectronica/wiki/Going-Native-with-Gradle
+* Site: http://cjstehno.github.io/gradle-natives
+* Blog Post: http://coffeaelectronica.com/blog/2014/going-native-with-gradle.html
 
 
 [![Build Status](https://drone.io/github.com/cjstehno/gradle-natives/status.png)](https://drone.io/github.com/cjstehno/gradle-natives/latest)

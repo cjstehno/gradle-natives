@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2014 Christopher J. Stehno
+ * Copyright (C) 2016 Christopher J. Stehno <chris@stehno.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.stehno.gradle.natives
+package com.stehno.gradle.natives.ext
 
 import groovy.transform.ToString
 
@@ -23,27 +22,27 @@ import groovy.transform.ToString
  */
 @ToString
 enum Platform {
-    WINDOWS( 'windows', ['.dll'] ),
-    LINUX( 'linux', ['.so'] ),
-    MAC( 'osx', ['.jnilib', '.dylib'] )
+    WINDOWS('windows', ['.dll']),
+    LINUX('linux', ['.so']),
+    MAC('osx', ['.jnilib', '.dylib'])
 
     final String os
     final Set<String> extensions = [] as Set<String>
 
-    private Platform( final String os, final Collection<String> extensions ){
+    private Platform(final String os, final Collection<String> extensions) {
         this.os = os
-        this.extensions.addAll( extensions )
+        this.extensions.addAll(extensions)
     }
 
     /**
      * Used to determine whether or not the provided file name has an extension acceptable to the platform.
      *
      * @param name the file name
-     * @return true, if the file extension is accepted by the platform
+     * @return true , if the file extension is accepted by the platform
      */
-    boolean acceptsExtension( final String name ){
+    boolean acceptsExtension(final String name) {
         extensions.any {
-            name.toLowerCase().endsWith( it )
+            name.toLowerCase().endsWith(it)
         }
     }
 
@@ -54,8 +53,17 @@ enum Platform {
      * @param os the os name to be converted to a Plaform
      * @return the Platform value or null if not found.
      */
-    static Platform fromOs( final String os ){
+    static Platform fromOs(final String os) {
         values().find { it.os == os }
+    }
+
+    /**
+     * Alias to <code>values()</code>. Retrieves a collection of all the platform values.
+     *
+     * @return a Collection of all the platform values.
+     */
+    static Collection<Platform> all() {
+        values()
     }
 
     /**
@@ -63,17 +71,17 @@ enum Platform {
      *
      * @return the platform for the current OS or null if not directly supported.
      */
-    static Platform current(){
+    static Platform current() {
         Platform currPlat = null
 
-        String osName = System.getProperty( 'os.name' ).toLowerCase()
-        if( osName.startsWith( Platform.WINDOWS.os ) ){
+        String osName = System.getProperty('os.name').toLowerCase()
+        if (osName.startsWith(Platform.WINDOWS.os)) {
             currPlat = Platform.WINDOWS
 
-        } else if( osName.contains( Platform.MAC.os ) || osName.contains( 'mac' ) ){
+        } else if (osName.contains(Platform.MAC.os) || osName.contains('mac')) {
             currPlat = Platform.MAC
 
-        } else if( osName.contains( Platform.LINUX.os ) ){
+        } else if (osName.contains(Platform.LINUX.os)) {
             currPlat = Platform.LINUX
         }
 

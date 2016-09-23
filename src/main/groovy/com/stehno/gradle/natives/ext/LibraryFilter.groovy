@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.stehno.gradle.natives
+package com.stehno.gradle.natives.ext
 
-import com.stehno.gradle.natives.ext.NativesExtension
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+import groovy.transform.TypeChecked
 
 /**
- * Gradle plugin providing assistance with managing the native components of Java-based libraries.
+ * Filter object used to limit the scope of the resolved libraries.
  */
-class NativesPlugin implements Plugin<Project> {
+@TypeChecked
+class LibraryFilter {
 
-    void apply(final Project project) {
-        project.extensions.create('natives', NativesExtension)
+    /**
+     * Limits the resolved libraries to only those provided in the list.
+     */
+    Collection<String> include = []
 
-        project.task 'listNatives', type: ListNativesTask
-        project.task 'includeNatives', type: IncludeNativesTask
-    }
+    /**
+     * Limits the resolved libraries to only those NOT provided in the list.
+     */
+    Collection<String> exclude = []
 }
