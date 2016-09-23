@@ -42,7 +42,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.stehno:gradle-natives:0.2.3"
+        classpath "gradle.plugin.com.stehno:gradle-natives:0.3.0"
     }
 }
 
@@ -53,21 +53,11 @@ Alternately, you can use the new <code>plugins</code> block with Gradle 2.1:
 
 <pre><code>
 plugins {
-	id 'com.stehno.natives' version '0.2.3'
+	id 'com.stehno.natives' version '0.3.0'
 }
 </code></pre>
 
-<p>And then configure the dependency libraries you want searched by adding a configuration block, such as:</p>
-
-<pre><code>
-natives {
-    jars = [ 'lwjgl-platform-2.9.1-natives-windows' ]
-    platforms = 'windows'
-}
-</code></pre>
-
-<p>Also, I have written a blog post, "<a href="https://github.com/cjstehno/coffeaelectronica/wiki/Going-Native-with-Gradle">Going Native with Gradle</a>", which goes into a bit more detail on how to get up and running.</p>
-
+<p>See the [main project page](https://github.com/cjstehno/gradle-natives) for more documentation.</p>
 
 <h3><a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
 
