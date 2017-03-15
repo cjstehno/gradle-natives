@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Platform.groovy</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gradle-natives</a> &gt; <a href="index.source.html" class="el_package">com.stehno.gradle.natives.ext</a> &gt; <span class="el_source">Platform.groovy</span></div><h1>Platform.groovy</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2017 Christopher J. Stehno &lt;chris@stehno.com&gt;
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.stehno.gradle.natives.ext
+
+import groovy.transform.ToString
+
+/**
+ * Defines the scope of platforms supported by the plugin.
+ */
+@ToString
+enum Platform {
+<span class="fc" id="L25">    WINDOWS('windows', ['.dll']),</span>
+<span class="fc" id="L26">    LINUX('linux', ['.so']),</span>
+<span class="fc" id="L27">    MAC('osx', ['.jnilib', '.dylib'])</span>
+
+    final String os
+<span class="fc" id="L30">    final Set&lt;String&gt; extensions = [] as Set&lt;String&gt;</span>
+
+    private Platform(final String os, final Collection&lt;String&gt; extensions) {
+<span class="fc" id="L33">        this.os = os</span>
+<span class="fc" id="L34">        this.extensions.addAll(extensions)</span>
+    }
+
+    /**
+     * Used to determine whether or not the provided file name has an extension acceptable to the platform.
+     *
+     * @param name the file name
+     * @return true , if the file extension is accepted by the platform
+     */
+    boolean acceptsExtension(final String name) {
+<span class="pc" id="L44">        extensions.any {</span>
+<span class="pc" id="L45">            name.toLowerCase().endsWith(it)</span>
+        }
+    }
+
+    /**
+     * Finds the Platform value for the specified OS, which must be the same name as the
+     * OS value for the Platform.
+     *
+     * @param os the os name to be converted to a Plaform
+     * @return the Platform value or null if not found.
+     */
+    static Platform fromOs(final String os) {
+<span class="nc bnc" id="L57" title="All 4 branches missed.">        values().find { it.os == os }</span>
+    }
+
+    /**
+     * Alias to &lt;code&gt;values()&lt;/code&gt;. Retrieves a collection of all the platform values.
+     *
+     * @return a Collection of all the platform values.
+     */
+    static Collection&lt;Platform&gt; all() {
+<span class="pc bpc" id="L66" title="2 of 4 branches missed.">        values()</span>
+    }
+
+    /**
+     * Used to determine the current platform being run by the build.
+     *
+     * @return the platform for the current OS or null if not directly supported.
+     */
+    static Platform current() {
+<span class="nc" id="L75">        Platform currPlat = null</span>
+
+<span class="nc" id="L77">        String osName = System.getProperty('os.name').toLowerCase()</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (osName.startsWith(Platform.WINDOWS.os)) {</span>
+<span class="nc" id="L79">            currPlat = Platform.WINDOWS</span>
+
+<span class="nc bnc" id="L81" title="All 6 branches missed.">        } else if (osName.contains(Platform.MAC.os) || osName.contains('mac')) {</span>
+<span class="nc" id="L82">            currPlat = Platform.MAC</span>
+
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        } else if (osName.contains(Platform.LINUX.os)) {</span>
+<span class="nc" id="L85">            currPlat = Platform.LINUX</span>
+        }
+
+<span class="nc" id="L88">        return currPlat</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

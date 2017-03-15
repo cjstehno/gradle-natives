@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IncludeNativesTask.groovy</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gradle-natives</a> &gt; <a href="index.source.html" class="el_package">com.stehno.gradle.natives</a> &gt; <span class="el_source">IncludeNativesTask.groovy</span></div><h1>IncludeNativesTask.groovy</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2017 Christopher J. Stehno &lt;chris@stehno.com&gt;
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.stehno.gradle.natives
+
+import com.stehno.gradle.natives.ext.NativesExtension
+import com.stehno.gradle.natives.ext.Platform
+import groovy.transform.CompileStatic
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+
+import static com.stehno.gradle.natives.NativeLibResolver.resolveFiles
+
+/**
+ * Gradle task used to include the resolved native libraries in the project build based on the current configuration.
+ */
+@CompileStatic
+class IncludeNativesTask extends DefaultTask {
+
+    IncludeNativesTask() {
+<span class="fc" id="L33">        group = 'Natives'</span>
+<span class="fc" id="L34">        description = 'Includes the resolved native libraries in the build artifacts.'</span>
+    }
+
+    @TaskAction @SuppressWarnings('GroovyUnusedDeclaration') void includeNatives() {
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        NativesExtension extension = project.extensions.findByType(NativesExtension) ?: new NativesExtension()</span>
+
+<span class="fc" id="L40">        logger.info &quot;Including native libraries found for configurations (${extension.configurations.join(', ')})...&quot;</span>
+
+<span class="pc" id="L42">        resolveFiles(project, extension).findAll { File art, List&lt;NativeLibFile&gt; libs -&gt; libs }.each { File art, List&lt;NativeLibFile&gt; libs -&gt;</span>
+<span class="fc" id="L43">            logger.info &quot; - ${art.name}:&quot;</span>
+<span class="pc" id="L44">            libs.each { lib -&gt;</span>
+<span class="fc" id="L45">                File outputDir = outputDir(lib.platform, extension.outputDir)</span>
+<span class="fc bfc" id="L46" title="All 4 branches covered.">                if (!outputDir.exists()) outputDir.mkdirs()</span>
+
+<span class="fc" id="L48">                logger.info &quot;\t[${lib.platform.name()}] ${lib.entry.name} --&gt; $outputDir&quot;</span>
+
+<span class="pc" id="L50">                new File(outputDir, lib.entry.name).bytes = lib.jar.getInputStream(lib.entry).bytes</span>
+            }
+        }
+    }
+
+    private File outputDir(final Platform platform, final String dir) {
+<span class="fc" id="L56">        String outd = dir.replaceAll(':platform', platform.os)</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        new File(outd.startsWith('/') ? outd : &quot;${project.buildDir}/$outd&quot; as String)</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
