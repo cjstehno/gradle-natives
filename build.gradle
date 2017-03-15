@@ -1,9 +1,11 @@
 plugins {
     id 'groovy'
     id 'com.github.hierynomus.license' version '0.13.1'
-    id 'com.gradle.plugin-publish' version '0.9.4'
+    id 'com.gradle.plugin-publish' version '0.9.7'
     id 'maven-publish'
     id 'java-gradle-plugin'
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.8.1'
 }
 
 group = 'com.stehno'
@@ -27,10 +29,6 @@ dependencies {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.14'
-}
-
 pluginBundle {
     website = 'http://cjstehno.github.io/gradle-natives/'
     vcsUrl = 'https://github.com/cjstehno/gradle-natives'
@@ -38,7 +36,7 @@ pluginBundle {
     tags = ['gradle', 'groovy', 'native']
 
     plugins {
-        greetingsPlugin {
+        gradleNativesPlugin {
             id = 'com.stehno.natives'
             displayName = 'Gradle-Natives Plugin'
         }
@@ -50,4 +48,11 @@ license {
     ext.name = 'Christopher J. Stehno'
     ext.email = 'chris@stehno.com'
     ext.year = Calendar.instance.get(Calendar.YEAR)
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
 }

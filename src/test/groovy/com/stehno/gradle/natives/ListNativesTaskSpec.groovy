@@ -37,6 +37,7 @@ class ListNativesTaskSpec extends Specification {
         BuildResult result = gradleRunner(['listNatives']).build()
 
         then: 'the build should pass'
+        println result.output
         totalSuccess result
     }
 
@@ -290,9 +291,7 @@ class ListNativesTaskSpec extends Specification {
     }
 
     private static boolean totalSuccess(final BuildResult result) {
-        result.tasks.every { BuildTask task ->
-            task.outcome == TaskOutcome.SUCCESS || task.outcome == TaskOutcome.UP_TO_DATE
-        }
+        result.tasks.every { BuildTask task -> task.outcome != TaskOutcome.FAILED }
     }
 
     private static boolean textContainsLines(final String text, final Collection<String> lines, final boolean trimmed = true) {
