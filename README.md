@@ -1,5 +1,7 @@
 # Gradle Natives Plugin
 
+[![Build Status](https://travis-ci.org/cjstehno/gradle-natives.svg?branch=master)](https://travis-ci.org/cjstehno/gradle-natives) [![Coverage Status](https://coveralls.io/repos/github/cjstehno/gradle-natives/badge.svg?branch=master)](https://coveralls.io/github/cjstehno/gradle-natives?branch=master)
+
 A Gradle plugin to aid in working with Java-based projects that provide supporting native libraries.
 
 ## Build
@@ -18,7 +20,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "gradle.plugin.com.stehno:gradle-natives:0.3.0"
+    classpath "gradle.plugin.com.stehno:gradle-natives:0.3.1"
   }
 }
 
@@ -29,7 +31,7 @@ Alternately, you can use the new plug definition block in Gradle 2.1 and beyond.
 
 ```groovy
 plugins {
-	id 'com.stehno.natives' version '0.3.0'
+	id 'com.stehno.natives' version '0.3.1'
 }
 ```
 
