@@ -6,7 +6,8 @@ plugins {
     id 'java-gradle-plugin'
     id 'jacoco'
     id 'com.github.kt3k.coveralls' version '2.8.1'
-    id "com.stehno.gradle.webpreview" version "0.1.1"
+    id "com.stehno.gradle.webpreview" version '0.2.0'
+    id "com.stehno.gradle.site" version "0.0.3"
 }
 
 group = 'com.stehno'
@@ -58,67 +59,9 @@ jacocoTestReport {
     }
 }
 
-task site(group: 'Documentation', description: 'Builds the documentation web site.', dependsOn: ['build', 'jacocoTestReport']) {
-    doLast {
-        logger.info 'Building documentation web site...'
-
-        // copy the templates
-        copy {
-            from 'src/site'
-            into 'build/site'
-            include '**/*.html'
-            expand([project_version: project.version, year: Calendar.instance.get(Calendar.YEAR)])
-        }
-
-        // copy the assets
-        copy {
-            from 'src/site'
-            into 'build/site'
-            include '**/stylesheets/**'
-            include '**/javascripts/**'
-            include '**/images/**'
-        }
-
-        copy {
-            from 'build/reports'
-            include '**/**'
-            into 'build/site'
-        }
-    }
-}
+tasks.site.dependsOn = ['build', 'jacocoTestReport']
 
 task publishSite(type: GradleBuild, group: 'Publishing', description: 'Publishes the documentation web site.', dependsOn: ['site']) {
     buildFile = 'publish.gradle'
     tasks = ['publishGhPages']
-}
-
-task updateVersion(group: 'Documentation', description: 'Updates the version in documentation based on the project version') {
-    doLast {
-        String newVersion = project.version
-        String oldVersion = project.property('from')
-
-        logger.lifecycle "Updating documentation versions from ${oldVersion} to ${newVersion}..."
-
-        ant.replace(file: 'README.md', token: oldVersion, value: newVersion)
-    }
-}
-
-task checkVersion(group: 'Verification', description: 'Verify that the project version is reflected in the documentation.') {
-    doLast {
-        logger.lifecycle "Verifying that the documentation references version ${project.version}..."
-
-        // Not the most efficient way to do this but should be ok for now
-        boolean documented = ['README.md'].every { f ->
-            boolean ok = project.file(f).text.contains(project.version)
-
-            logger.info " - Checking: $f: $ok"
-            ok
-        }
-
-        assert documented, 'The documented project version does not match the project version: Run "./gradlew updateVersion -Pfrom=OLD_VERSION" and try again.'
-    }
-}
-
-webPreview {
-    resourceDir = file('build/site')
 }
