@@ -270,12 +270,7 @@ class ListNativesTaskSpec extends Specification {
     def 'listNatives for jme bullet'() {
         given:
         buildFile([
-            dependencies: /compile 'org.jmonkeyengine:jme3-bullet-native:3.1.0-stable'/,
-            //            repository: '''
-            //                maven {
-            //                    url 'http://updates.jmonkeyengine.org/maven'
-            //                }
-            //            '''
+            dependencies: /compile 'org.jmonkeyengine:jme3-bullet-native:3.1.0-stable'/
         ])
 
         when: 'the task is run'
