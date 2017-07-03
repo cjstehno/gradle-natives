@@ -267,6 +267,34 @@ class ListNativesTaskSpec extends Specification {
         ]
     }
 
+    def 'listNatives for jme bullet'() {
+        given:
+        buildFile([
+            dependencies: /compile 'org.jmonkeyengine:jme3-bullet-native:3.1.0-stable'/,
+            //            repository: '''
+            //                maven {
+            //                    url 'http://updates.jmonkeyengine.org/maven'
+            //                }
+            //            '''
+        ])
+
+        when: 'the task is run'
+        BuildResult result = gradleRunner(['listNatives']).build()
+
+        then:
+        println result.output
+
+        textContainsLines result.output, [
+            '- jme3-bullet-native-3.1.0-stable.jar:',
+            '[WINDOWS] native/windows/x86/bulletjme.dll',
+            '[WINDOWS] native/windows/x86_64/bulletjme.dll',
+            '[LINUX] native/linux/x86/libbulletjme.so',
+            '[LINUX] native/linux/x86_64/libbulletjme.so',
+            '[MAC] native/osx/x86_64/libbulletjme.dylib',
+            '[MAC] native/osx/x86/libbulletjme.dylib'
+        ]
+    }
+
     private void buildFile(final Map<String, Object> config = [:]) {
         File buildFile = projectDir.newFile('build.gradle')
         buildFile.text = """
@@ -277,7 +305,7 @@ class ListNativesTaskSpec extends Specification {
                 id 'java'
             }
             repositories {
-                jcenter()
+                ${config.repository ?: 'jcenter()'}
             }
             dependencies {
                 ${config.dependencies ?: ''}
