@@ -4,6 +4,8 @@
 
 A Gradle plugin to aid in working with Java-based projects that provide supporting native libraries.
 
+> While I still consider this an active project, it has fallen to the bottom of my priorities list. I have added the `help-wanted` category in case anyone wants to lend a hand.
+
 ## Build
 
     ./gradlew clean build
