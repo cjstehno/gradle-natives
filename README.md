@@ -4,9 +4,7 @@
 
 A Gradle plugin to aid in working with Java-based projects that provide supporting native libraries.
 
-## Current Status
-
-**Bottom Line:** _Abandoned_
+## Current Status: Abandoned
 
 This plugin started out to solve the simple problem of making the native libraries stored in dependency jar files more easily usable in Gradle projects, 
 namely the simple game project that I was working on at the time. When I stopped working on the game project, it seemed that there was some interest
