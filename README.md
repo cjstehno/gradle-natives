@@ -4,7 +4,18 @@
 
 A Gradle plugin to aid in working with Java-based projects that provide supporting native libraries.
 
-> While I still consider this an active project, it has fallen to the bottom of my priorities list. I have added the `help-wanted` category in case anyone wants to lend a hand.
+## Current Status
+
+**Bottom Line:** _Abandoned_
+
+This plugin started out to solve the simple problem of making the native libraries stored in dependency jar files more easily usable in Gradle projects, 
+namely the simple game project that I was working on at the time. When I stopped working on the game project, it seemed that there was some interest
+in the plugin so I kept it up and tried to make it a bit better. Personally, I have not used it since a few months after it was written, and I have 
+other projects that I do actually use, so I am listing this project as abandoned.
+
+That being said, I will make some attempt to keep it building successfully under current Gradle and Groovy trends; however, most reported issues 
+probably won't get much attention. You are welcome to submit pull requests for fixes and features and I will review and act on them in a timely manner.
+
 
 ## Build
 
@@ -78,6 +89,3 @@ This plugin only resolves native libraries that are on the project classpath as 
 
 * Site: http://cjstehno.github.io/gradle-natives
 * Blog Post: http://coffeaelectronica.com/blog/2014/going-native-with-gradle.html
-
-
-[![Build Status](https://drone.io/github.com/cjstehno/gradle-natives/status.png)](https://drone.io/github.com/cjstehno/gradle-natives/latest)

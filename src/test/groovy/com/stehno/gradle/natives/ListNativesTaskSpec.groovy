@@ -22,33 +22,35 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class ListNativesTaskSpec extends Specification {
 
-    // TODO: test with different gradle versions: .withGradleVersion()
-
     @Rule public TemporaryFolder projectDir = new TemporaryFolder()
 
-    def 'listNatives with no dependencies should succeed'() {
+    @Unroll 'listNatives with no dependencies should succeed: v#version'() {
         given: 'an build file with no native configuration and no native dependencies'
         buildFile()
 
         when: 'the task is run'
-        BuildResult result = gradleRunner(['listNatives']).build()
+        BuildResult result = gradleRunner(['listNatives'], version).build()
 
         then: 'the build should pass'
         println result.output
         totalSuccess result
+
+        where:
+        version << ['3.4.1', '4.2.1']
     }
 
-    def 'listNatives with native dependencies should list them (default config)'() {
+    @Unroll 'listNatives with native dependencies should list them (default config): v#version'() {
         given:
         buildFile([
             dependencies: /compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'/
         ])
 
         when: 'the task is run'
-        BuildResult result = gradleRunner(['listNatives']).build()
+        BuildResult result = gradleRunner(['listNatives'], version).build()
 
         then:
         textContainsLines result.output, [
@@ -61,9 +63,12 @@ class ListNativesTaskSpec extends Specification {
             '[LINUX] liblwjgl64.so',
             '[LINUX] libopenal.so'
         ]
+
+        where:
+        version << ['3.4.1', '4.2.1']
     }
 
-    def 'listNatives with native dependencies should list them (windows)'() {
+    @Unroll 'listNatives with native dependencies should list them (windows): v#version'() {
         given:
         buildFile([
             dependencies: /compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'/,
@@ -75,7 +80,7 @@ class ListNativesTaskSpec extends Specification {
         ])
 
         when: 'the task is run'
-        BuildResult result = gradleRunner(['listNatives']).build()
+        BuildResult result = gradleRunner(['listNatives'], version).build()
 
         then:
         textContainsLines result.output, [
@@ -91,9 +96,12 @@ class ListNativesTaskSpec extends Specification {
             '[WINDOWS] jinput-raw_64.dll',
             '[WINDOWS] jinput-raw.dll'
         ]
+
+        where:
+        version << ['3.4.1', '4.2.1']
     }
 
-    def 'listNatives with native dependencies should list them (windows,linux)'() {
+    @Unroll 'listNatives with native dependencies should list them (windows,linux): v#version'() {
         given:
         buildFile([
             dependencies: /compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'/,
@@ -105,7 +113,7 @@ class ListNativesTaskSpec extends Specification {
         ])
 
         when: 'the task is run'
-        BuildResult result = gradleRunner(['listNatives']).build()
+        BuildResult result = gradleRunner(['listNatives'], version).build()
 
         then:
         textContainsLines result.output, [
@@ -129,9 +137,12 @@ class ListNativesTaskSpec extends Specification {
             '[WINDOWS] jinput-raw_64.dll',
             '[WINDOWS] jinput-raw.dll'
         ]
+
+        where:
+        version << ['3.4.1', '4.2.1']
     }
 
-    def 'listNatives for some of the trouble libs on all platforms'() {
+    @Unroll 'listNatives for some of the trouble libs on all platforms: v#version'() {
         given:
         buildFile([
             dependencies: '''
@@ -148,7 +159,7 @@ class ListNativesTaskSpec extends Specification {
         ])
 
         when: 'the task is run'
-        BuildResult result = gradleRunner(['listNatives']).build()
+        BuildResult result = gradleRunner(['listNatives'], version).build()
 
         then:
         textContainsLines result.output, [
@@ -172,9 +183,12 @@ class ListNativesTaskSpec extends Specification {
             '[LINUX] libglfw.so',
             '[LINUX] libopenal.so'
         ]
+
+        where:
+        version << ['3.4.1', '4.2.1']
     }
 
-    def 'listNatives for some of the trouble libs on all platforms (lib excludes)'() {
+    @Unroll 'listNatives for some of the trouble libs on all platforms (lib excludes): v#version'() {
         given:
         buildFile([
             dependencies: '''
@@ -194,7 +208,7 @@ class ListNativesTaskSpec extends Specification {
         ])
 
         when: 'the task is run'
-        BuildResult result = gradleRunner(['listNatives']).build()
+        BuildResult result = gradleRunner(['listNatives'], version).build()
 
         then:
         textContainsLines result.output, [
@@ -217,9 +231,12 @@ class ListNativesTaskSpec extends Specification {
             '[LINUX] libopenal.so'
         ]
         textDoesNotContainLines result.output, ['[WINDOWS] lwjgl32.dll', '[MAC] libjemalloc.dylib',]
+
+        where:
+        version << ['3.4.1', '4.2.1']
     }
 
-    def 'listNatives for some of the trouble libs on all platforms (includes filter)'() {
+    @Unroll 'listNatives for some of the trouble libs on all platforms (includes filter): v#version'() {
         given:
         buildFile([
             dependencies: '''
@@ -239,7 +256,7 @@ class ListNativesTaskSpec extends Specification {
         ])
 
         when: 'the task is run'
-        BuildResult result = gradleRunner(['listNatives']).build()
+        BuildResult result = gradleRunner(['listNatives'], version).build()
 
         then:
         textContainsLines result.output, [
@@ -265,6 +282,9 @@ class ListNativesTaskSpec extends Specification {
             '[LINUX] liblwjgl.so',
             '[LINUX] libglfw.so',
         ]
+
+        where:
+        version << ['3.4.1', '4.2.1']
     }
 
     private void buildFile(final Map<String, Object> config = [:]) {
@@ -286,8 +306,8 @@ class ListNativesTaskSpec extends Specification {
         """.stripIndent()
     }
 
-    private GradleRunner gradleRunner(final List<String> args) {
-        GradleRunner.create().withPluginClasspath().withDebug(true).withProjectDir(projectDir.root).withArguments(args)
+    private GradleRunner gradleRunner(final List<String> args, final String version = '3.4.1') {
+        GradleRunner.create().withGradleVersion(version).withPluginClasspath().withDebug(true).withProjectDir(projectDir.root).withArguments(args)
     }
 
     private static boolean totalSuccess(final BuildResult result) {

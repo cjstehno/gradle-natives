@@ -22,6 +22,7 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class IncludeNativesTaskSpec extends Specification {
 
@@ -38,7 +39,7 @@ class IncludeNativesTaskSpec extends Specification {
         totalSuccess result
     }
 
-    def 'includeNatives (all platforms)'() {
+    @Unroll 'includeNatives (all platforms): v#version'() {
         given:
         buildFile([
             dependencies: '''
@@ -55,7 +56,7 @@ class IncludeNativesTaskSpec extends Specification {
         ])
 
         when:
-        BuildResult result = gradleRunner(['includeNatives']).build()
+        BuildResult result = gradleRunner(['includeNatives'], version).build()
 
         then:
         totalSuccess(result)
@@ -77,9 +78,12 @@ class IncludeNativesTaskSpec extends Specification {
             'build/natives/libglfw.so',
             'build/natives/libopenal.so'
         ]
+
+        where:
+        version << ['3.4.1', '4.2.1']
     }
 
-    def 'includeNatives (all by platforms)'() {
+    @Unroll 'includeNatives (all by platforms): v#version'() {
         given:
         buildFile([
             dependencies: '''
@@ -97,7 +101,7 @@ class IncludeNativesTaskSpec extends Specification {
         ])
 
         when:
-        BuildResult result = gradleRunner(['includeNatives']).build()
+        BuildResult result = gradleRunner(['includeNatives'], version).build()
 
         then:
         totalSuccess(result)
@@ -119,9 +123,12 @@ class IncludeNativesTaskSpec extends Specification {
             'build/natives/linux/libglfw.so',
             'build/natives/linux/libopenal.so'
         ]
+
+        where:
+        version << ['3.4.1', '4.2.1']
     }
 
-    def 'includeNatives (all by platforms, exclude)'() {
+    @Unroll 'includeNatives (all by platforms, exclude): v#version'() {
         given:
         buildFile([
             dependencies: '''
@@ -142,7 +149,7 @@ class IncludeNativesTaskSpec extends Specification {
         ])
 
         when:
-        BuildResult result = gradleRunner(['includeNatives']).build()
+        BuildResult result = gradleRunner(['includeNatives'], version).build()
 
         then:
         totalSuccess(result)
@@ -166,6 +173,9 @@ class IncludeNativesTaskSpec extends Specification {
             'build/natives/windows/lwjgl.dll',
             'build/natives/osx/liblwjgl.dylib'
         ]
+
+        where:
+        version << ['3.4.1', '4.2.1']
     }
 
     private static boolean nativeFilesExist(final File root, Collection<String> paths) {
@@ -176,7 +186,7 @@ class IncludeNativesTaskSpec extends Specification {
         paths.every { path -> !new File(root, path).exists() }
     }
 
-    // TODO: make all these helper methods shared (might be useful as a vanilla-gradle library)
+    // TODO: use my Gradle-Testing project for this stuff
 
     private void buildFile(final Map<String, Object> config = [:]) {
         File buildFile = projectDir.newFile('build.gradle')
@@ -197,25 +207,13 @@ class IncludeNativesTaskSpec extends Specification {
         """.stripIndent()
     }
 
-    private GradleRunner gradleRunner(final List<String> args) {
-        GradleRunner.create().withPluginClasspath().withDebug(true).withProjectDir(projectDir.root).withArguments(args)
+    private GradleRunner gradleRunner(final List<String> args, final String version='3.4.1') {
+        GradleRunner.create().withGradleVersion(version).withPluginClasspath().withDebug(true).withProjectDir(projectDir.root).withArguments(args)
     }
 
     private static boolean totalSuccess(final BuildResult result) {
         result.tasks.every { BuildTask task ->
             task.outcome == TaskOutcome.SUCCESS
-        }
-    }
-
-    private static boolean textContainsLines(final String text, final Collection<String> lines, final boolean trimmed = true) {
-        lines.every { String line ->
-            text.contains(trimmed ? line.trim() : line)
-        }
-    }
-
-    private static boolean textDoesNotContainLines(final String text, final Collection<String> lines, final boolean trimmed = true) {
-        lines.every { String line ->
-            !text.contains(trimmed ? line.trim() : line)
         }
     }
 }
